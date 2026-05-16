@@ -1,0 +1,29 @@
+{
+  "info": { "name": "Admin Smoke Collection", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "item": [
+    {
+      "name": "List Pending Users",
+      "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{base_url}}/api/admin/users/pending" } }
+    },
+    {
+      "name": "Get Pending User",
+      "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{base_url}}/api/admin/users/pending/7" } }
+    },
+    {
+      "name": "Approve User",
+      "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"comment\": \"Smoke approve\" }" }, "url": { "raw": "{{base_url}}/api/admin/users/approve/7" } }
+    },
+    {
+      "name": "Reject User",
+      "request": { "method": "PUT", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{ \"reason\": \"Smoke reject\" }" }, "url": { "raw": "{{base_url}}/api/admin/users/reject/6" } }
+    },
+    {
+      "name": "Get User Admin View",
+      "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{base_url}}/api/admin/users/7" } }
+    },
+    {
+      "name": "Deactivate User",
+      "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": { "raw": "{{base_url}}/api/admin/users/5" } }
+    }
+  ]
+}

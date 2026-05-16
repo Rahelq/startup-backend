@@ -1,0 +1,2667 @@
+{
+  "info": {
+    "_postman_id": "a24615ef-1ee1-40d2-b576-9baed6057746",
+    "name": "StartupConnect Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "37603307"
+  },
+  "variable": [
+    {
+      "key": "startupToken",
+      "value": ""
+    },
+    {
+      "key": "mentorToken",
+      "value": ""
+    },
+    {
+      "key": "investorToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "investmentId",
+      "value": "1"
+    },
+    {
+      "key": "mentorshipId",
+      "value": "1"
+    },
+    {
+      "key": "projectId",
+      "value": "1"
+    },
+    {
+      "key": "sessionId",
+      "value": "1"
+    },
+    {
+      "key": "milestoneId",
+      "value": "1"
+    },
+    {
+      "key": "conversationId",
+      "value": "1"
+    },
+    {
+      "key": "messageId",
+      "value": "1"
+    },
+    {
+      "key": "notificationId",
+      "value": "1"
+    },
+    {
+      "key": "paymentId",
+      "value": "1"
+    },
+    {
+      "key": "paymentTxRef",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Demo\",\n  \"last_name\": \"Startup\",\n  \"email\": \"startup@test.com\",\n  \"password\": \"123456\",\n  \"role\": \"Startup\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/register"
+          }
+        },
+        {
+          "name": "Login Startup Demo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"startup@startupconnect.test\",\n  \"password\": \"Demo123!\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.token) { pm.collectionVariables.set('startupToken', response.token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Investor Demo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"investor@startupconnect.test\",\n  \"password\": \"Demo123!\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.token) { pm.collectionVariables.set('investorToken', response.token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Mentor Demo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"mentor@startupconnect.test\",\n  \"password\": \"Demo123!\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.token) { pm.collectionVariables.set('mentorToken', response.token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Admin Demo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@startupconnect.test\",\n  \"password\": \"Demo123!\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.token) { pm.collectionVariables.set('adminToken', response.token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/refresh"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/logout"
+          }
+        },
+        {
+          "name": "Approve User (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comment\": \"Approved from Postman\"\n}"
+            },
+            "url": "http://localhost:3000/api/auth/approve/{{userId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Startup Profile",
+      "item": [
+        {
+          "name": "Create Startup Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "startup_name",
+                  "value": "Tech Hub",
+                  "type": "text"
+                },
+                {
+                  "key": "industry",
+                  "value": "FinTech",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Funding platform",
+                  "type": "text"
+                },
+                {
+                  "key": "business_stage",
+                  "value": "Seed",
+                  "type": "text"
+                },
+                {
+                  "key": "founded_year",
+                  "value": "2024",
+                  "type": "text"
+                },
+                {
+                  "key": "team_size",
+                  "value": "4",
+                  "type": "text"
+                },
+                {
+                  "key": "location",
+                  "value": "Addis Ababa",
+                  "type": "text"
+                },
+                {
+                  "key": "website",
+                  "value": "https://techhub.com",
+                  "type": "text"
+                },
+                {
+                  "key": "funding_needed",
+                  "value": "50000",
+                  "type": "text"
+                },
+                {
+                  "key": "pitch_deck",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "business_plan",
+                  "type": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "url": "http://localhost:3000/api/startups/profile"
+          }
+        },
+        {
+          "name": "Get My Startup Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/startups/profile"
+          }
+        },
+        {
+          "name": "Update Startup Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "startup_name",
+                  "value": "Tech Hub Updated",
+                  "type": "text"
+                },
+                {
+                  "key": "industry",
+                  "value": "FinTech",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Updated startup profile",
+                  "type": "text"
+                },
+                {
+                  "key": "business_stage",
+                  "value": "Growth",
+                  "type": "text"
+                },
+                {
+                  "key": "founded_year",
+                  "value": "2025",
+                  "type": "text"
+                },
+                {
+                  "key": "team_size",
+                  "value": "8",
+                  "type": "text"
+                },
+                {
+                  "key": "location",
+                  "value": "Addis Ababa",
+                  "type": "text"
+                },
+                {
+                  "key": "website",
+                  "value": "https://techhub.com",
+                  "type": "text"
+                },
+                {
+                  "key": "funding_needed",
+                  "value": "75000",
+                  "type": "text"
+                },
+                {
+                  "key": "pitch_deck",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "business_plan",
+                  "type": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "url": "http://localhost:3000/api/startups/profile"
+          }
+        },
+        {
+          "name": "Discover",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/startups/discover"
+          }
+        },
+        {
+          "name": "Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/startups/recommendations"
+          }
+        },
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/startups/dashboard"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mentor Profile",
+      "item": [
+        {
+          "name": "Create Mentor Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mentorToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "headline",
+                  "value": "Growth and fundraising mentor",
+                  "type": "text"
+                },
+                {
+                  "key": "expertise",
+                  "value": "Go-to-market, fundraising, product strategy",
+                  "type": "text"
+                },
+                {
+                  "key": "years_experience",
+                  "value": "8",
+                  "type": "text"
+                },
+                {
+                  "key": "hourly_rate",
+                  "value": "120",
+                  "type": "text"
+                },
+                {
+                  "key": "country",
+                  "value": "Ethiopia",
+                  "type": "text"
+                },
+                {
+                  "key": "bio",
+                  "value": "Helps early-stage startups validate and scale.",
+                  "type": "text"
+                },
+                {
+                  "key": "availability",
+                  "value": "{\"monday\":[\"09:00-12:00\"],\"wednesday\":[\"14:00-17:00\"]}",
+                  "type": "text"
+                },
+                {
+                  "key": "cv",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "certifications",
+                  "type": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "url": "http://localhost:3000/api/mentors/profile"
+          }
+        },
+        {
+          "name": "Get My Mentor Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mentorToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/mentors/profile"
+          }
+        },
+        {
+          "name": "Update Mentor Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mentorToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "headline",
+                  "value": "Updated mentor headline",
+                  "type": "text"
+                },
+                {
+                  "key": "expertise",
+                  "value": "Fundraising, strategy",
+                  "type": "text"
+                },
+                {
+                  "key": "years_experience",
+                  "value": "9",
+                  "type": "text"
+                },
+                {
+                  "key": "hourly_rate",
+                  "value": "130",
+                  "type": "text"
+                },
+                {
+                  "key": "country",
+                  "value": "Ethiopia",
+                  "type": "text"
+                },
+                {
+                  "key": "bio",
+                  "value": "Updated mentor bio.",
+                  "type": "text"
+                },
+                {
+                  "key": "availability",
+                  "value": "{\"monday\":[\"10:00-12:00\"]}",
+                  "type": "text"
+                },
+                {
+                  "key": "cv",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "certifications",
+                  "type": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "url": "http://localhost:3000/api/mentors/profile"
+          }
+        },
+        {
+          "name": "List Mentors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/mentors"
+          }
+        },
+        {
+          "name": "Get Mentor By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/mentors/{{mentorId}}"
+          }
+        },
+        {
+          "name": "Delete Mentor Document",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mentorToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/mentors/documents/{{documentId}}"
+          }
+        },
+        {
+          "name": "Replace Mentor Document",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mentorToken}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "value": ""
+                }
+              ]
+            },
+            "url": "http://localhost:3000/api/mentors/documents/{{documentId}}/replace"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Investor Profile",
+      "item": [
+        {
+          "name": "Create Investor Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"investor_type\": \"Individual\",\n  \"organization_name\": \"ACME Capital\",\n  \"investment_budget\": 100000,\n  \"preferred_industry\": \"FinTech\",\n  \"investment_stage\": \"Seed\",\n  \"country\": \"Ethiopia\",\n  \"portfolio_size\": 5\n}"
+            },
+            "url": "http://localhost:3000/api/investors/profile"
+          }
+        },
+        {
+          "name": "Get My Investor Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investors/profile"
+          }
+        },
+        {
+          "name": "Update Investor Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"investor_type\": \"Institutional\",\n  \"organization_name\": \"ACME Capital Updated\",\n  \"investment_budget\": 150000,\n  \"preferred_industry\": \"HealthTech\",\n  \"investment_stage\": \"Series A\",\n  \"country\": \"Ethiopia\",\n  \"portfolio_size\": 8\n}"
+            },
+            "url": "http://localhost:3000/api/investors/profile"
+          }
+        },
+        {
+          "name": "List Investors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investors"
+          }
+        },
+        {
+          "name": "Discover Startups",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investors/startups"
+          }
+        },
+        {
+          "name": "Startup Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investors/startups/recommendations"
+          }
+        },
+        {
+          "name": "Get Startup Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investors/startups/{{startupId}}"
+          }
+        },
+        {
+          "name": "Get Investor Portfolio",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investors/portfolio"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Investment Workflow",
+      "item": [
+        {
+          "name": "Create Investment Offer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"receiver_id\": 1,\n  \"funding_amount\": 50000,\n  \"equity_percentage\": 10,\n  \"message\": \"Interested in funding this startup\",\n  \"type\": \"offer\"\n}"
+            },
+            "url": "http://localhost:3000/api/investment-workflow/offers"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.investment_id) { pm.collectionVariables.set('investmentId', String(response.investment_id)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Investment Offer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investment-workflow/offers/{{investmentId}}"
+          }
+        },
+        {
+          "name": "Counter Offer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"funding_amount\": 60000,\n  \"equity_percentage\": 12,\n  \"message\": \"Counter offer from startup\"\n}"
+            },
+            "url": "http://localhost:3000/api/investment-workflow/investments/{{investmentId}}/counter-offer"
+          }
+        },
+        {
+          "name": "Respond To Investment Offer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"accepted\"\n}"
+            },
+            "url": "http://localhost:3000/api/investment-workflow/investments/{{investmentId}}/respond"
+          }
+        },
+        {
+          "name": "Get Investment Negotiation",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investment-workflow/investments/{{investmentId}}/negotiation"
+          }
+        },
+        {
+          "name": "My Investment Portfolio",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investment-workflow/portfolio"
+          }
+        },
+        {
+          "name": "Received Investments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investment-workflow/received"
+          }
+        },
+        {
+          "name": "Record Investment Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50000,\n  \"payment_status\": \"completed\",\n  \"payment_method\": \"bank_transfer\",\n  \"notes\": \"Escrow release\"\n}"
+            },
+            "url": "http://localhost:3000/api/investment-workflow/investments/{{investmentId}}/payment"
+          }
+        },
+        {
+          "name": "Submit Startup Feedback",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{investorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Great communication and execution speed.\"\n}"
+            },
+            "url": "http://localhost:3000/api/investment-workflow/investments/{{investmentId}}/feedback"
+          }
+        },
+        {
+          "name": "List Startup Feedback",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investment-workflow/feedback"
+          }
+        },
+        {
+          "name": "Admin Investment List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/investment-workflow/admin/all"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mentorship Workflow",
+      "item": [
+        {
+          "name": "Create Mentorship Offer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"receiver_id\": 1,\n  \"message\": \"Need help preparing for investor meetings.\",\n  \"type\": \"request\"\n}"
+            },
+            "url": "http://localhost:3000/api/mentorship-workflow/offers"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.mentorship_id) { pm.collectionVariables.set('mentorshipId', String(response.mentorship_id)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Mentorship Offer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/mentorship-workflow/offers/{{mentorshipId}}"
+          }
+        },
+        {
+          "name": "Set Mentor Pricing",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mentorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hourly_rate\": 120,\n  \"session_duration_minutes\": 60,\n  \"availability_json\": {\n    \"monday\": { \"available\": true, \"slots\": [\"09:00-12:00\"] }\n  }\n}"
+            },
+            "url": "http://localhost:3000/api/mentorship-workflow/mentors/{{mentorshipId}}/pricing"
+          }
+        },
+        {
+          "name": "Book Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mentorship_id\": 1,\n  \"session_date\": \"2026-06-01\",\n  \"session_start_at\": \"2026-06-01T10:00:00.000Z\",\n  \"session_end_at\": \"2026-06-01T11:00:00.000Z\",\n  \"agenda\": \"Pitch and fundraising prep\"\n}"
+            },
+            "url": "http://localhost:3000/api/mentorship-workflow/sessions/book"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.session?.mentorship_session_id) { pm.collectionVariables.set('sessionId', String(response.session.mentorship_session_id)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Sessions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/mentorship-workflow/sessions?mentorship_id={{mentorshipId}}"
+          }
+        },
+        {
+          "name": "Record Session Notes",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mentorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Reviewed pitch deck and investor targeting.\",\n  \"attendance_status\": \"completed\",\n  \"progress_topics\": [\"Pitch deck\", \"Fundraising\"]\n}"
+            },
+            "url": "http://localhost:3000/api/mentorship-workflow/sessions/{{sessionId}}/notes"
+          }
+        },
+        {
+          "name": "Share Resource",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mentorToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mentorship_id\": 1,\n  \"resource_title\": \"Pitch Deck Template\",\n  \"resource_url\": \"https://example.com/pitch-template.pdf\",\n  \"resource_type\": \"file\"\n}"
+            },
+            "url": "http://localhost:3000/api/mentorship-workflow/resources"
+          }
+        },
+        {
+          "name": "My Mentorships",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mentorToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/mentorship-workflow/my-mentorships"
+          }
+        },
+        {
+          "name": "Received Mentorships",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/mentorship-workflow/received"
+          }
+        },
+        {
+          "name": "Admin Mentorship List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/mentorship-workflow/admin/all"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Project Workflow",
+      "item": [
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"project_name\": \"AI Agriculture Platform\",\n  \"description\": \"Helping farmers with AI\",\n  \"funding_goal\": 100000,\n  \"target_amount\": 100000,\n  \"timeline_months\": 12,\n  \"status\": \"draft\"\n}"
+            },
+            "url": "http://localhost:3000/api/projects-workflow/projects"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.project?.project_id) { pm.collectionVariables.set('projectId', String(response.project.project_id)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Project",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/projects-workflow/projects/{{projectId}}"
+          }
+        },
+        {
+          "name": "Update Project Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\",\n  \"funding_stage\": \"seed\",\n  \"completion_notes\": \"Project started\"\n}"
+            },
+            "url": "http://localhost:3000/api/projects-workflow/projects/{{projectId}}/status"
+          }
+        },
+        {
+          "name": "Create Milestone",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"milestone_title\": \"Prototype\",\n  \"description\": \"Build MVP prototype\",\n  \"target_date\": \"2026-07-01\",\n  \"deliverables\": \"MVP and demo\",\n  \"success_criteria\": \"Prototype ready for testing\",\n  \"estimated_cost\": 15000\n}"
+            },
+            "url": "http://localhost:3000/api/projects-workflow/projects/{{projectId}}/milestones"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.milestone?.milestone_id) { pm.collectionVariables.set('milestoneId', String(response.milestone.milestone_id)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Project Milestones",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/projects-workflow/projects/{{projectId}}/milestones"
+          }
+        },
+        {
+          "name": "Update Milestone Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"progress_notes\": \"Prototype delivered\",\n  \"completion_date\": \"2026-07-01\"\n}"
+            },
+            "url": "http://localhost:3000/api/projects-workflow/milestones/{{milestoneId}}"
+          }
+        },
+        {
+          "name": "Upload Project Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"document_name\": \"Pitch Deck\",\n  \"document_type\": \"pdf\",\n  \"file_url\": \"https://example.com/pitch-deck.pdf\"\n}"
+            },
+            "url": "http://localhost:3000/api/projects-workflow/projects/{{projectId}}/documents"
+          }
+        },
+        {
+          "name": "Get Project Documents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/projects-workflow/projects/{{projectId}}/documents"
+          }
+        },
+        {
+          "name": "My Projects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/projects-workflow/my-projects"
+          }
+        },
+        {
+          "name": "Admin Project List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/projects-workflow/admin/all"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Initiate Checkout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reference_type\": \"mentorship\",\n  \"reference_id\": {{mentorshipId}},\n  \"amount\": 120,\n  \"currency\": \"ETB\",\n  \"description\": \"Mentorship session payment\"\n}"
+            },
+            "url": "http://localhost:3000/api/transactions/payments/initiate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.payment?.payment_id) { pm.collectionVariables.set('paymentId', String(response.payment.payment_id)); }",
+                  "if (response.tx_ref) { pm.collectionVariables.set('paymentTxRef', String(response.tx_ref)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List My Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/payments"
+          }
+        },
+        {
+          "name": "Verify Payment By Tx Ref",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/payments/transactions/{{paymentTxRef}}"
+          }
+        },
+        {
+          "name": "Get Payment By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/payments/{{paymentId}}"
+          }
+        },
+        {
+          "name": "Chapa Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tx_ref\": \"{{paymentTxRef}}\",\n  \"status\": \"success\"\n}"
+            },
+            "url": "http://localhost:3000/api/payments/webhooks/chapa"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "List Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/notifications"
+          }
+        },
+        {
+          "name": "Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/notifications/unread-count"
+          }
+        },
+        {
+          "name": "Mark Notification Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/notifications/{{notificationId}}/read"
+          }
+        },
+        {
+          "name": "Mark All Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/notifications/mark-all-read"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"other_user_id\": 2,\n  \"subject\": \"Follow up\",\n  \"body\": \"Can we review the updated deck?\"\n}"
+            },
+            "url": "http://localhost:3000/api/messages"
+          }
+        },
+        {
+          "name": "Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/messages/unread"
+          }
+        },
+        {
+          "name": "Edit Message",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"Updated follow-up message\"\n}"
+            },
+            "url": "http://localhost:3000/api/messages/{{messageId}}"
+          }
+        },
+        {
+          "name": "Delete Message",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/messages/{{messageId}}"
+          }
+        },
+        {
+          "name": "Get Conversation",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/messages/{{conversationId}}"
+          }
+        },
+        {
+          "name": "Mark Conversation Seen",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/messages/seen/{{conversationId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Test",
+      "item": [
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/test/dashboard"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Profile",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/users/profile"
+          }
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"first_name\": \"Updated\",\n  \"last_name\": \"User\"\n}"
+            },
+            "url": "http://localhost:3000/api/users/profile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Interactions",
+      "item": [
+        {
+          "name": "Create Interaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"receiver_id\": 2,\n  \"type\": \"invite\",\n  \"category\": \"general\",\n  \"message\": \"Let us connect\"\n}"
+            },
+            "url": "http://localhost:3000/api/interactions"
+          }
+        },
+        {
+          "name": "Get My Interactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/interactions"
+          }
+        },
+        {
+          "name": "Get Interaction",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/interactions/{{interactionId}}"
+          }
+        },
+        {
+          "name": "Respond to Interaction",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{mentorToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"accepted\"\n}"
+            },
+            "url": "http://localhost:3000/api/interactions/{{interactionId}}/respond"
+          }
+        },
+        {
+          "name": "Cancel Interaction",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/interactions/{{interactionId}}"
+          }
+        },
+        {
+          "name": "Active Mentorships",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/interactions/relationships/mentorships"
+          }
+        },
+        {
+          "name": "Active Investments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/interactions/relationships/investments"
+          }
+        },
+        {
+          "name": "Admin Interaction List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/interactions/admin/all"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Conversations",
+      "item": [
+        {
+          "name": "Create Or Get Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"other_user_id\": 2\n}"
+            },
+            "url": "http://localhost:3000/api/conversations"
+          }
+        },
+        {
+          "name": "List My Conversations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/conversations/{{startupId}}"
+          }
+        },
+        {
+          "name": "Conversation By Participants",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/conversations/{{startupId}}/with/{{investorId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Create Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Issue report\",\n  \"description\": \"Something needs review\"\n}"
+            },
+            "url": "http://localhost:3000/api/reports"
+          }
+        },
+        {
+          "name": "My Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/reports/my"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Video Sessions",
+      "item": [
+        {
+          "name": "Create Video Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Demo session\",\n  \"scheduled_at\": \"2026-06-01T10:00:00.000Z\"\n}"
+            },
+            "url": "http://localhost:3000/api/video-sessions"
+          }
+        },
+        {
+          "name": "List Video Sessions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/video-sessions"
+          }
+        },
+        {
+          "name": "Get Video Session",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/video-sessions/{{videoSessionId}}"
+          }
+        },
+        {
+          "name": "Join Video Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/video-sessions/{{videoSessionId}}/join"
+          }
+        },
+        {
+          "name": "Reschedule Video Session",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scheduled_at\": \"2026-06-02T10:00:00.000Z\"\n}"
+            },
+            "url": "http://localhost:3000/api/video-sessions/{{videoSessionId}}/reschedule"
+          }
+        },
+        {
+          "name": "Cancel Video Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/video-sessions/{{videoSessionId}}/cancel"
+          }
+        },
+        {
+          "name": "Zoom Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"meeting.started\"\n}"
+            },
+            "url": "http://localhost:3000/api/video-sessions/webhooks/zoom"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "List Pending Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/users/pending"
+          }
+        },
+        {
+          "name": "Get Pending User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/users/pending/{{userId}}"
+          }
+        },
+        {
+          "name": "Reject User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Manual review failed\"\n}"
+            },
+            "url": "http://localhost:3000/api/admin/users/reject/{{userId}}"
+          }
+        },
+        {
+          "name": "Approve User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"comment\": \"Approved from Admin collection\"\n}"
+            },
+            "url": "http://localhost:3000/api/admin/users/approve/{{userId}}"
+          }
+        },
+        {
+          "name": "Search Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/users?role=Mentor&q=john&limit=50"
+          }
+        },
+        {
+          "name": "Get User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/users/{{userId}}"
+          }
+        },
+        {
+          "name": "Create Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/create-admin"
+          }
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}"
+            },
+            "url": "http://localhost:3000/api/admin/users/{{userId}}/status"
+          }
+        },
+        {
+          "name": "List Startups",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/startups"
+          }
+        },
+        {
+          "name": "Approve Startup",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/startups/{{startupId}}/approve"
+          }
+        },
+        {
+          "name": "Unapprove Startup",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/startups/{{startupId}}/unapprove"
+          }
+        },
+        {
+          "name": "Remove Startup",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/startups/{{startupId}}/remove"
+          }
+        },
+        {
+          "name": "Approve Mentor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/mentors/{{mentorId}}/approve"
+          }
+        },
+        {
+          "name": "Unapprove Mentor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/mentors/{{mentorId}}/unapprove"
+          }
+        },
+        {
+          "name": "Approve Investor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/investors/{{investorId}}/approve"
+          }
+        },
+        {
+          "name": "Unapprove Investor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/investors/{{investorId}}/unapprove"
+          }
+        },
+        {
+          "name": "Get Document",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/documents/{{documentId}}"
+          }
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/documents/{{documentId}}"
+          }
+        },
+        {
+          "name": "Get Mentor Document",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/mentor-documents/{{documentId}}"
+          }
+        },
+        {
+          "name": "Delete Mentor Document (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/mentor-documents/{{documentId}}"
+          }
+        },
+        {
+          "name": "List Projects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/projects"
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/projects/{{projectId}}"
+          }
+        },
+        {
+          "name": "Restore Project",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/projects/{{projectId}}/restore"
+          }
+        },
+        {
+          "name": "Update Project Status (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}"
+            },
+            "url": "http://localhost:3000/api/admin/projects/{{projectId}}/status"
+          }
+        },
+        {
+          "name": "Investment Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/investment-requests"
+          }
+        },
+        {
+          "name": "Update Investment Request Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/investment-requests/{{investmentRequestId}}/status"
+          }
+        },
+        {
+          "name": "List Admin Investments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/investments"
+          }
+        },
+        {
+          "name": "List Admin Sessions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/sessions"
+          }
+        },
+        {
+          "name": "List Admin Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/payments"
+          }
+        },
+        {
+          "name": "Mentorship Overview",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/mentorship/overview"
+          }
+        },
+        {
+          "name": "Mentorship Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/mentorship/requests"
+          }
+        },
+        {
+          "name": "Mentorship Sessions Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/mentorship/sessions"
+          }
+        },
+        {
+          "name": "Mentorship Reports Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/mentorship/reports"
+          }
+        },
+        {
+          "name": "Mentorship Resources Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/mentorship/resources"
+          }
+        },
+        {
+          "name": "Mentorship Payments Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/mentorship/payments"
+          }
+        },
+        {
+          "name": "Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/audit-logs?limit=100&offset=0"
+          }
+        },
+        {
+          "name": "Export Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/audit-logs/export?since=2026-01-01&until=2026-04-30"
+          }
+        },
+        {
+          "name": "Reports Overview",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/reports/overview"
+          }
+        },
+        {
+          "name": "Export Report CSV",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/reports/export?type=users"
+          }
+        },
+        {
+          "name": "Schedule Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"users\",\n  \"run_at\": \"2026-05-10T09:00:00.000Z\"\n}"
+            },
+            "url": "http://localhost:3000/api/admin/reports/schedule"
+          }
+        },
+        {
+          "name": "List Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/reports"
+          }
+        },
+        {
+          "name": "Update Report Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/reports/{{reportId}}"
+          }
+        },
+        {
+          "name": "Maintenance Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/maintenance/status"
+          }
+        },
+        {
+          "name": "Clear Audit Logs",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"days\": 365\n}"
+            },
+            "url": "http://localhost:3000/api/admin/maintenance/clear-audit-logs"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+StartupConnect Demo Pitch Deck
+
+This is a sample uploaded document used to verify file uploads.
+It will be stored in the backend/uploads folder and recorded in the documents table.
