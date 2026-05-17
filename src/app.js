@@ -33,6 +33,11 @@ const mentorshipWorkflowRoutes = require("./routes/mentorshipWorkflowRoutes");
 const projectWorkflowRoutes = require("./routes/projectWorkflowRoutes");
 const resourceRoutes = require("./routes/resourceRoutes");
 const videoSessionRoutes = require("./routes/videoSessionRoutes");
+const ratingRoutes = require("./routes/ratingRoutes");
+const reputationRoutes = require("./routes/reputationRoutes");
+const analyticsRoutes = require("./routes/analyticsRoutes");
+const recommendationRoutes = require("./routes/recommendationRoutes");
+const intelligenceRoutes = require("./routes/intelligenceRoutes");
 
 const app = express();
 
@@ -97,6 +102,11 @@ app.use("/api/interactions", interactionRoutes);
 // Connection Layer (Phase 2) mounted
 app.use("/api/connection", connectionLayerRoutes);
 app.use("/api/video-sessions", videoSessionRoutes);
+app.use("/api/ratings", ratingRoutes);
+app.use("/api/reputation", reputationRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/recommendations", recommendationRoutes);
+app.use("/api/intelligence", intelligenceRoutes);
 // phase3 temporary routes removed; functionality merged into workflow routes
 
 const errorHandler = require("./middleware/errorHandler");

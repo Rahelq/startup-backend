@@ -4,7 +4,7 @@ async function blockUser(blockerId, blockedId, reason) {
   const client = await pool.connect();
   try {
     const r = await client.query(
-      `INSERT INTO blocked_users (blocker_id, blocked_id, reason) VALUES ($1,$2,$3) ON CONFLICT (blocker_id, blocked_id) DO NOTHING RETURNING *`,
+      "INSERT INTO blocked_users (blocker_id, blocked_id, reason) VALUES ($1,$2,$3) ON CONFLICT (blocker_id, blocked_id) DO NOTHING RETURNING *",
       [blockerId, blockedId, reason]
     );
     return r.rows[0] || null;

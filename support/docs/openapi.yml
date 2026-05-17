@@ -213,3 +213,216 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
+# Ratings & Feedback
+paths:
+  /api/ratings:
+    post:
+      summary: Create a rating
+      tags: [Ratings]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingInput'
+      responses:
+        '201':
+          description: Rating created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+
+  /api/ratings/{entityType}/{entityId}:
+    get:
+      summary: List ratings for an entity
+      tags: [Ratings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: entityType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: entityId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ratings list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ratings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Rating'
+
+  /api/ratings/{id}/report:
+    post:
+      summary: Report a rating for moderation
+      tags: [Ratings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Report submitted
+
+  /api/reputation/{userId}:
+    get:
+      summary: Get reputation score for a user
+      tags: [Reputation]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Reputation score
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReputationScore'
+
+# Admin moderation surface (restricted to Admin role)
+  /api/admin/ratings:
+    get:
+      summary: List ratings for moderation (admin)
+      tags: [Admin, Ratings]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Moderation queue
+
+  /api/admin/ratings/reports:
+    get:
+      summary: List reported ratings
+      tags: [Admin, Ratings]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Report list
+
+  /api/admin/ratings/{ratingId}/hide:
+    put:
+      summary: Hide a rating (admin)
+      tags: [Admin, Ratings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ratingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Rating hidden
+
+  /api/admin/ratings/{ratingId}/remove:
+    put:
+      summary: Remove a rating (admin)
+      tags: [Admin, Ratings]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ratingId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Rating removed
+
+components:
+  schemas:
+    RatingInput:
+      type: object
+      properties:
+        relationship_id:
+          type: integer
+        relationship_type:
+          type: string
+        entity_type:
+          type: string
+          enum: [mentor, startup, investor, session, meeting, project, milestone, relationship]
+        entity_id:
+          type: integer
+        reviewed_user_id:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        title:
+          type: string
+        review:
+          type: string
+        is_anonymous:
+          type: boolean
+
+    Rating:
+      type: object
+      properties:
+        id:
+          type: integer
+        reviewer_id:
+          type: integer
+        reviewed_user_id:
+          type: integer
+        rating:
+          type: integer
+        review:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    ReputationScore:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        trust_score:
+          type: number
+        engagement_score:
+          type: number
+        completion_score:
+          type: number
+        response_score:
+          type: number
+        calculated_at:
+          type: string
+          format: date-time

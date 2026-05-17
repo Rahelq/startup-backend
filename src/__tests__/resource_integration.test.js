@@ -33,16 +33,16 @@ describe("Shared resources integration", () => {
 
     // create mentorship request + active relationship
     const ir = await pool.query(
-      `INSERT INTO interaction_requests (sender_id, receiver_id, type, category) VALUES ($1,$2,'invite','mentorship') RETURNING interaction_id`,
+      "INSERT INTO interaction_requests (sender_id, receiver_id, type, category) VALUES ($1,$2,'invite','mentorship') RETURNING interaction_id",
       [mentorUserId, startupUserId]
     );
     const mr = await pool.query(
-      `INSERT INTO mentorship_requests (startup_id, mentor_id, subject, message, status) VALUES ((SELECT startup_id FROM startups WHERE user_id=$1),(SELECT mentor_id FROM mentors WHERE user_id=$2),'Test','t','accepted') RETURNING mentorship_request_id`,
+      "INSERT INTO mentorship_requests (startup_id, mentor_id, subject, message, status) VALUES ((SELECT startup_id FROM startups WHERE user_id=$1),(SELECT mentor_id FROM mentors WHERE user_id=$2),'Test','t','accepted') RETURNING mentorship_request_id",
       [startupUserId, mentorUserId]
     );
     mentorshipRequestId = mr.rows[0].mentorship_request_id;
     await pool.query(
-      `INSERT INTO mentorship_relationships (mentor_id, startup_id, interaction_request_id, mentorship_request_id, status) VALUES ($1,$2,$3,$4,'active')`,
+      "INSERT INTO mentorship_relationships (mentor_id, startup_id, interaction_request_id, mentorship_request_id, status) VALUES ($1,$2,$3,$4,'active')",
       [mentorUserId, startupUserId, ir.rows[0].interaction_id, mentorshipRequestId]
     );
 

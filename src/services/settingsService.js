@@ -124,7 +124,7 @@ async function upsertNotificationPreferences(userId, values) {
 
     // inspect actual table columns so we only try to update existing columns
     const colRes = await client.query(
-      `SELECT column_name FROM information_schema.columns WHERE table_name='notification_preferences'`
+      "SELECT column_name FROM information_schema.columns WHERE table_name='notification_preferences'"
     );
     const existing = new Set(colRes.rows.map((r) => r.column_name));
 

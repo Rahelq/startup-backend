@@ -15,7 +15,7 @@ exports.recordProgress = async ({
   }
 
   const rel = await pool.query(
-    `SELECT mentorship_id, mentor_id, startup_id, status FROM mentorship_relationships WHERE mentorship_request_id = $1 LIMIT 1`,
+    "SELECT mentorship_id, mentor_id, startup_id, status FROM mentorship_relationships WHERE mentorship_request_id = $1 LIMIT 1",
     [mentorshipRequestId]
   );
   if (!rel.rowCount) {
@@ -61,7 +61,7 @@ exports.listProgressForMentorship = async ({ userId, mentorshipRequestId }) => {
   }
 
   const rel = await pool.query(
-    `SELECT mentorship_id, mentor_id, startup_id, status FROM mentorship_relationships WHERE mentorship_request_id = $1 LIMIT 1`,
+    "SELECT mentorship_id, mentor_id, startup_id, status FROM mentorship_relationships WHERE mentorship_request_id = $1 LIMIT 1",
     [mentorshipRequestId]
   );
   if (!rel.rowCount) {
@@ -82,7 +82,7 @@ exports.listProgressForMentorship = async ({ userId, mentorshipRequestId }) => {
   }
 
   const q = await pool.query(
-    `SELECT * FROM mentorship_progress WHERE mentorship_request_id = $1 ORDER BY created_at DESC`,
+    "SELECT * FROM mentorship_progress WHERE mentorship_request_id = $1 ORDER BY created_at DESC",
     [mentorshipRequestId]
   );
   return q.rows;

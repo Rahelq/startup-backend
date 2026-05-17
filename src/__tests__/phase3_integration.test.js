@@ -8,20 +8,20 @@ describe("Phase3 integration: investment tracking & project activity", () => {
   beforeAll(async () => {
     // create test users (approved) and generate JWTs directly
     const u1 = await pool.query(
-      `INSERT INTO users (email, password_hash, first_name, last_name, is_active, is_approved, verification_status, role) VALUES ('p3-startup@example.com', '$2b$10$abcdefghijklmnopqrstuv', 'P3','Startup', true, true, 'approved', 'Startup') RETURNING user_id`
+      "INSERT INTO users (email, password_hash, first_name, last_name, is_active, is_approved, verification_status, role) VALUES ('p3-startup@example.com', '$2b$10$abcdefghijklmnopqrstuv', 'P3','Startup', true, true, 'approved', 'Startup') RETURNING user_id"
     );
     const u2 = await pool.query(
-      `INSERT INTO users (email, password_hash, first_name, last_name, is_active, is_approved, verification_status, role) VALUES ('p3-investor@example.com', '$2b$10$abcdefghijklmnopqrstuv', 'P3','Investor', true, true, 'approved', 'Investor') RETURNING user_id`
+      "INSERT INTO users (email, password_hash, first_name, last_name, is_active, is_approved, verification_status, role) VALUES ('p3-investor@example.com', '$2b$10$abcdefghijklmnopqrstuv', 'P3','Investor', true, true, 'approved', 'Investor') RETURNING user_id"
     );
     startupUserId = u1.rows[0].user_id;
     investorUserId = u2.rows[0].user_id;
 
-    await pool.query(`INSERT INTO startups (user_id, startup_name) VALUES ($1, $2)`, [
+    await pool.query("INSERT INTO startups (user_id, startup_name) VALUES ($1, $2)", [
       startupUserId,
       "P3 Startup",
     ]);
     await pool.query(
-      `INSERT INTO investors (user_id, organization_name, investor_type) VALUES ($1,$2,$3)`,
+      "INSERT INTO investors (user_id, organization_name, investor_type) VALUES ($1,$2,$3)",
       [investorUserId, "P3 Investor", "organization"]
     );
 
@@ -32,18 +32,18 @@ describe("Phase3 integration: investment tracking & project activity", () => {
 
     // create an interaction + investment relationship active
     const ir = await pool.query(
-      `INSERT INTO interaction_requests (sender_id, receiver_id, type, category) VALUES ($1,$2,'invite','investment') RETURNING interaction_id`,
+      "INSERT INTO interaction_requests (sender_id, receiver_id, type, category) VALUES ($1,$2,'invite','investment') RETURNING interaction_id",
       [investorUserId, startupUserId]
     );
     const inv = await pool.query(
-      `INSERT INTO investment_relationships (investor_id, startup_id, interaction_request_id, funding_amount, equity_percentage, status) VALUES ($1,$2,$3,10000,5,'active') RETURNING investment_id`,
+      "INSERT INTO investment_relationships (investor_id, startup_id, interaction_request_id, funding_amount, equity_percentage, status) VALUES ($1,$2,$3,10000,5,'active') RETURNING investment_id",
       [investorUserId, startupUserId, ir.rows[0].interaction_id]
     );
     investmentId = inv.rows[0].investment_id;
 
     // create a project owned by startup
     const pj = await pool.query(
-      `INSERT INTO projects (startup_id, project_title, description, funding_goal, status) VALUES ((SELECT startup_id FROM startups WHERE user_id=$1), 'P3 Project', 'desc', 50000, 'active') RETURNING project_id`,
+      "INSERT INTO projects (startup_id, project_title, description, funding_goal, status) VALUES ((SELECT startup_id FROM startups WHERE user_id=$1), 'P3 Project', 'desc', 50000, 'active') RETURNING project_id",
       [startupUserId]
     );
     projectId = pj.rows[0].project_id;

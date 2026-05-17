@@ -2,12 +2,57 @@ const pool = require("../config/db");
 const startupModel = require("../models/startupModel");
 const mentorModel = require("../models/mentorModel");
 const investorModel = require("../models/investorModel");
+const ratingModel = require("../models/ratingModel");
 const activityFeedService = require("./activityFeedService");
 const notificationService = require("./notificationService");
 const recommendationService = require("./recommendationService");
+const reputationService = require("./reputationService");
 
 function parseLimit(value, fallback = 10, max = 100) {
   return Math.min(Math.max(Number(value) || fallback, 1), max);
+}
+
+async function getRatingsSummary(userId) {
+  const [aggregate, byEntity, recentReviews, reputation] = await Promise.all([
+    pool.query(
+      `SELECT
+        COUNT(*)::int AS total_reviews,
+        AVG(rating)::numeric(4,2) AS average_rating,
+        AVG(COALESCE(communication_rating, rating))::numeric(4,2) AS communication_score,
+        AVG(COALESCE(professionalism_rating, rating))::numeric(4,2) AS professionalism_score,
+        AVG(COALESCE(expertise_rating, rating))::numeric(4,2) AS expertise_score,
+        AVG(COALESCE(value_rating, rating))::numeric(4,2) AS value_score,
+        AVG(COALESCE(responsiveness_rating, rating))::numeric(4,2) AS response_score
+       FROM ratings
+       WHERE reviewed_user_id = $1 AND status = 'active'`,
+      [userId]
+    ),
+    pool.query(
+      `SELECT entity_type, COUNT(*)::int AS total_reviews, AVG(rating)::numeric(4,2) AS average_rating
+       FROM ratings
+       WHERE reviewed_user_id = $1 AND status = 'active'
+       GROUP BY entity_type
+       ORDER BY total_reviews DESC, entity_type ASC`,
+      [userId]
+    ),
+    ratingModel.findRecentForUser(userId, { limit: 10 }),
+    reputationService.getReputationSummary(userId),
+  ]);
+
+  return {
+    totals: aggregate.rows[0] || {
+      total_reviews: 0,
+      average_rating: 0,
+      communication_score: 0,
+      professionalism_score: 0,
+      expertise_score: 0,
+      value_score: 0,
+      response_score: 0,
+    },
+    by_entity_type: byEntity.rows,
+    recent_reviews: recentReviews,
+    reputation: reputation.reputation,
+  };
 }
 
 async function getUnreadMessageCount(userId) {
@@ -220,6 +265,7 @@ async function getStartupDashboard(userId, query = {}) {
     recommendations,
     relationships,
     sharedResources,
+    ratingsSummary,
   ] = await Promise.all([
     getDashboardSummary(userId, "startup"),
     getUpcomingSessions(userId, "startup", query.sessionLimit || 10),
@@ -243,6 +289,7 @@ async function getStartupDashboard(userId, query = {}) {
 			 LIMIT 10`,
       [startup.startup_id, userId]
     ),
+    getRatingsSummary(userId),
   ]);
 
   return {
@@ -258,6 +305,7 @@ async function getStartupDashboard(userId, query = {}) {
     recommended_investors: recommendations.investors,
     relationship_statistics: relationships,
     shared_resources: sharedResources.rows,
+    reputation_summary: ratingsSummary,
   };
 }
 
@@ -269,7 +317,7 @@ async function getMentorDashboard(userId, query = {}) {
     throw err;
   }
 
-  const [base, sessions, messages, recommendations, relationships, ratings, earnings] =
+  const [base, sessions, messages, recommendations, relationships, earnings, ratingsSummary] =
     await Promise.all([
       getDashboardSummary(userId, "mentor"),
       getUpcomingSessions(userId, "mentor", query.sessionLimit || 10),
@@ -279,15 +327,11 @@ async function getMentorDashboard(userId, query = {}) {
       }),
       getRelationshipStatistics(userId, "mentor"),
       pool.query(
-        `SELECT COALESCE(AVG(rating), 0)::numeric AS average_rating
-			 FROM reviews WHERE mentor_id = $1`,
-        [mentor.mentor_id]
-      ),
-      pool.query(
         `SELECT COALESCE(SUM(amount), 0)::numeric AS total_earnings
 			 FROM payments WHERE receiver_id = $1 AND status = 'completed'`,
         [userId]
       ),
+      getRatingsSummary(userId),
     ]);
 
   return {
@@ -298,10 +342,19 @@ async function getMentorDashboard(userId, query = {}) {
     notifications: base.notifications,
     relationship_statistics: relationships,
     mentee_progress: relationships,
-    average_rating: ratings.rows[0]?.average_rating || 0,
+    average_rating: ratingsSummary.totals.average_rating || 0,
     total_earnings: earnings.rows[0]?.total_earnings || 0,
     recommended_startups: recommendations.startups,
     recommended_projects: recommendations.projects,
+    reputation_summary: ratingsSummary,
+    session_ratings: ratingsSummary.recent_reviews.filter((item) =>
+      ["session", "meeting"].includes(String(item.entity_type).toLowerCase())
+    ),
+    mentee_feedback: ratingsSummary.recent_reviews.filter((item) =>
+      ["startup", "relationship"].includes(String(item.entity_type).toLowerCase())
+    ),
+    professionalism_score: ratingsSummary.totals.professionalism_score || 0,
+    response_score: ratingsSummary.totals.response_score || 0,
   };
 }
 
@@ -313,36 +366,45 @@ async function getInvestorDashboard(userId, query = {}) {
     throw err;
   }
 
-  const [base, meetings, messages, recommendations, relationships, portfolio, fundingRequests] =
-    await Promise.all([
-      getDashboardSummary(userId, "investor"),
-      getUpcomingMeetings(userId, query.meetingLimit || 10),
-      getRecentMessages(userId, query.messageLimit || 10),
-      recommendationService.getInvestorRecommendations(userId, {
-        limit: query.recommendationLimit || 10,
-      }),
-      getRelationshipStatistics(userId, "investor"),
-      pool.query(
-        `SELECT i.*, ir.startup_id, ir.status AS request_status
+  const [
+    base,
+    meetings,
+    messages,
+    recommendations,
+    relationships,
+    portfolio,
+    fundingRequests,
+    ratingsSummary,
+  ] = await Promise.all([
+    getDashboardSummary(userId, "investor"),
+    getUpcomingMeetings(userId, query.meetingLimit || 10),
+    getRecentMessages(userId, query.messageLimit || 10),
+    recommendationService.getInvestorRecommendations(userId, {
+      limit: query.recommendationLimit || 10,
+    }),
+    getRelationshipStatistics(userId, "investor"),
+    pool.query(
+      `SELECT i.*, ir.startup_id, ir.status AS request_status
 			 FROM investments i
 			 JOIN investment_requests ir ON ir.investment_request_id = i.investment_request_id
 			 JOIN investors inv ON inv.investor_id = ir.investor_id
 			 JOIN users u ON u.user_id = inv.user_id
 			 WHERE u.user_id = $1
 			 ORDER BY i.created_at DESC`,
-        [userId]
-      ),
-      pool.query(
-        `SELECT ir.*
+      [userId]
+    ),
+    pool.query(
+      `SELECT ir.*
 			 FROM investment_requests ir
 			 JOIN investors inv ON inv.investor_id = ir.investor_id
 			 JOIN users u ON u.user_id = inv.user_id
 			 WHERE u.user_id = $1
 			 ORDER BY ir.created_at DESC
 			 LIMIT 10`,
-        [userId]
-      ),
-    ]);
+      [userId]
+    ),
+    getRatingsSummary(userId),
+  ]);
 
   return {
     dashboard_summary: base,
@@ -355,6 +417,12 @@ async function getInvestorDashboard(userId, query = {}) {
     funding_requests_pending: fundingRequests.rows,
     recommended_startups: recommendations.startups,
     recommended_projects: recommendations.projects,
+    reputation_summary: ratingsSummary,
+    startup_ratings: ratingsSummary.recent_reviews.filter((item) =>
+      ["startup", "project", "relationship"].includes(String(item.entity_type).toLowerCase())
+    ),
+    communication_quality: ratingsSummary.totals.communication_score || 0,
+    engagement_quality: ratingsSummary.totals.value_score || 0,
   };
 }
 

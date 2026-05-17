@@ -45,7 +45,7 @@ async function assessSuspicion({ userId, ip, deviceId }) {
         if (userRes.rows.length && userRes.rows[0].email) {
           const to = userRes.rows[0].email;
           const subject = "New device login detected";
-          const text = `A login from a new device was detected for your StartupConnect account. If this wasn't you, please secure your account.`;
+          const text = "A login from a new device was detected for your StartupConnect account. If this wasn't you, please secure your account.";
           mail.sendMail(to, subject, text, `<p>${text}</p>`).catch(() => {});
         }
       } catch (e) {}

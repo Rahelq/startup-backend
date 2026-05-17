@@ -31,7 +31,7 @@ module.exports = function requireActiveRelationship(type) {
           );
         } else if (mentorshipRequestId) {
           r = await pool.query(
-            `SELECT mentorship_id, mentor_id, startup_id, status FROM mentorship_relationships WHERE mentorship_request_id = $1`,
+            "SELECT mentorship_id, mentor_id, startup_id, status FROM mentorship_relationships WHERE mentorship_request_id = $1",
             [mentorshipRequestId]
           );
         } else {
@@ -73,7 +73,7 @@ module.exports = function requireActiveRelationship(type) {
         const investmentId = extractId(req, ["investment_id", "investmentId", "investment_id"]);
         if (!investmentId) return res.status(400).json({ message: "investment_id is required" });
         const r = await pool.query(
-          `SELECT investment_id, investor_id, startup_id, status FROM investment_relationships WHERE investment_id = $1`,
+          "SELECT investment_id, investor_id, startup_id, status FROM investment_relationships WHERE investment_id = $1",
           [investmentId]
         );
         if (!r.rowCount)

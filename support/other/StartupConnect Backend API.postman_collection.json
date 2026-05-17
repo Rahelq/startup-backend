@@ -1423,6 +1423,49 @@
           ]
         },
         {
+          "name": "Transactions History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/transactions/history"
+          }
+        },
+        {
+          "name": "Verify Payment By Tx Ref (transactions)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/transactions/payments/{{paymentTxRef}}/verify"
+          }
+        },
+        {
+          "name": "Chapa Webhook (transactions)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tx_ref\": \"{{paymentTxRef}}\",\n  \"status\": \"success\"\n}"
+            },
+            "url": "http://localhost:3000/api/transactions/webhooks/chapa"
+          }
+        },
+        {
           "name": "List My Payments",
           "request": {
             "method": "GET",
@@ -2659,6 +2702,105 @@
               "raw": "{\n  \"days\": 365\n}"
             },
             "url": "http://localhost:3000/api/admin/maintenance/clear-audit-logs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ratings",
+      "item": [
+        {
+          "name": "Create Rating",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entity_type\": \"mentor\",\n  \"entity_id\": 1,\n  \"reviewed_user_id\": 2,\n  \"rating\": 5,\n  \"review\": \"Great session\"\n}"
+            },
+            "url": "http://localhost:3000/api/ratings"
+          }
+        },
+        {
+          "name": "List Ratings for Entity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/ratings/{{entityType}}/{{entityId}}"
+          }
+        },
+        {
+          "name": "Report Rating",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"abuse\",\n  \"description\": \"Spam\"\n}"
+            },
+            "url": "http://localhost:3000/api/ratings/{{ratingId}}/report"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Ratings",
+      "item": [
+        {
+          "name": "List Moderation Queue",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/admin/ratings"
+          }
+        },
+        {
+          "name": "Hide Rating",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"policy\"\n}"
+            },
+            "url": "http://localhost:3000/api/admin/ratings/{{ratingId}}/hide"
           }
         }
       ]

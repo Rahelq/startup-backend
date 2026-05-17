@@ -26,7 +26,7 @@ async function createSetup(userId) {
   const client = await pool.connect();
   try {
     const r = await client.query(
-      `INSERT INTO two_factor_auth (user_id, secret, backup_codes, is_enabled, updated_at) VALUES ($1,$2,$3,false,NOW()) ON CONFLICT (user_id) DO UPDATE SET secret = $2, backup_codes = $3, updated_at = NOW() RETURNING *`,
+      "INSERT INTO two_factor_auth (user_id, secret, backup_codes, is_enabled, updated_at) VALUES ($1,$2,$3,false,NOW()) ON CONFLICT (user_id) DO UPDATE SET secret = $2, backup_codes = $3, updated_at = NOW() RETURNING *",
       [userId, secret.base32, backup_codes]
     );
     return { secret: secret.otpauth_url, base32: secret.base32, backup_codes };

@@ -35,7 +35,7 @@ async function create(data, client = pool) {
 }
 
 async function findByPaymentId(paymentId) {
-  const result = await pool.query(`SELECT * FROM invoices WHERE payment_id = $1`, [paymentId]);
+  const result = await pool.query("SELECT * FROM invoices WHERE payment_id = $1", [paymentId]);
   return result.rows[0] || null;
 }
 

@@ -15,7 +15,7 @@ async function create(
 
 async function listByPayment(paymentId) {
   const result = await pool.query(
-    `SELECT * FROM financial_audit_logs WHERE payment_id = $1 ORDER BY created_at DESC`,
+    "SELECT * FROM financial_audit_logs WHERE payment_id = $1 ORDER BY created_at DESC",
     [paymentId]
   );
   return result.rows;

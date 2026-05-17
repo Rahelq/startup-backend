@@ -273,7 +273,7 @@ exports.getDashboard = async (userId) => {
       "SELECT * FROM investment_requests WHERE investor_id = $1 ORDER BY created_at DESC",
       [investor.investor_id]
     ),
-    pool.query(`SELECT * FROM payments WHERE payer_id = $1 ORDER BY created_at DESC`, [
+    pool.query("SELECT * FROM payments WHERE payer_id = $1 ORDER BY created_at DESC", [
       investor.user_id,
     ]),
   ]);

@@ -84,7 +84,7 @@ async function getFeed({
   } else {
     const relatedIds = await getRelatedUserIds(userId, role);
     queryValues = [relatedIds, maxLimit, offset];
-    filters.unshift(`al.user_id = ANY($1::int[])`);
+    filters.unshift("al.user_id = ANY($1::int[])");
     if (activityType) {
       queryValues.push(activityType);
       filters.push(`al.activity_type = $${queryValues.length}`);

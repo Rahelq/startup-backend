@@ -50,7 +50,7 @@ function normalizeGatewayEmail(email) {
 
 async function getUserProfile(client, userId) {
   const result = await client.query(
-    `SELECT user_id, first_name, last_name, email FROM users WHERE user_id = $1`,
+    "SELECT user_id, first_name, last_name, email FROM users WHERE user_id = $1",
     [userId]
   );
   return result.rows[0] || null;
@@ -650,7 +650,7 @@ async function handleChapaWebhook({ req }) {
     await client.query("BEGIN");
 
     const exists = await client.query(
-      `SELECT id, processed FROM payment_webhook_events WHERE event_hash = $1 LIMIT 1`,
+      "SELECT id, processed FROM payment_webhook_events WHERE event_hash = $1 LIMIT 1",
       [eventHash]
     );
 
@@ -681,7 +681,7 @@ async function handleChapaWebhook({ req }) {
   });
 
   await pool.query(
-    `UPDATE payment_webhook_events SET processed = TRUE, processed_at = NOW() WHERE event_hash = $1`,
+    "UPDATE payment_webhook_events SET processed = TRUE, processed_at = NOW() WHERE event_hash = $1",
     [eventHash]
   );
 
@@ -694,7 +694,7 @@ async function handleChapaWebhook({ req }) {
 async function listTransactionHistory({ userId, limit = 50, status = null, paymentType = null }) {
   const params = [userId];
   let idx = 2;
-  let where = `WHERE (payer_id = $1 OR receiver_id = $1 OR from_user_id = $1 OR to_user_id = $1)`;
+  let where = "WHERE (payer_id = $1 OR receiver_id = $1 OR from_user_id = $1 OR to_user_id = $1)";
 
   if (status) {
     where += ` AND status = $${idx++}`;
@@ -728,7 +728,7 @@ async function requestRefund({ paymentId, requesterId, amount, reason }) {
   try {
     await client.query("BEGIN");
 
-    const pResult = await client.query(`SELECT * FROM payments WHERE payment_id = $1 FOR UPDATE`, [
+    const pResult = await client.query("SELECT * FROM payments WHERE payment_id = $1 FOR UPDATE", [
       paymentId,
     ]);
     if (!pResult.rowCount) throw Object.assign(new Error("Payment not found"), { status: 404 });

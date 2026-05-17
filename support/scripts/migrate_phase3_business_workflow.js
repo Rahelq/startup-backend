@@ -49,13 +49,13 @@ async function main() {
     `);
 
     await client.query(
-      `CREATE INDEX IF NOT EXISTS idx_mentorship_progress_req ON mentorship_progress(mentorship_request_id)`
+      "CREATE INDEX IF NOT EXISTS idx_mentorship_progress_req ON mentorship_progress(mentorship_request_id)"
     );
     await client.query(
-      `CREATE INDEX IF NOT EXISTS idx_investment_tracking_inv ON investment_tracking(investment_id)`
+      "CREATE INDEX IF NOT EXISTS idx_investment_tracking_inv ON investment_tracking(investment_id)"
     );
     await client.query(
-      `CREATE INDEX IF NOT EXISTS idx_project_activity_project ON project_activity_logs(project_id)`
+      "CREATE INDEX IF NOT EXISTS idx_project_activity_project ON project_activity_logs(project_id)"
     );
 
     await client.query("COMMIT");

@@ -18,7 +18,7 @@ async function listSecurityLogs(req, res, next) {
 async function listSuspiciousUsers(req, res, next) {
   try {
     const r = await pool.query(
-      `SELECT user_id, COUNT(*) AS failures, MAX(created_at) AS last_attempt FROM login_attempts WHERE success = false GROUP BY user_id ORDER BY failures DESC LIMIT 100`
+      "SELECT user_id, COUNT(*) AS failures, MAX(created_at) AS last_attempt FROM login_attempts WHERE success = false GROUP BY user_id ORDER BY failures DESC LIMIT 100"
     );
     res.json({ data: r.rows });
   } catch (err) {
@@ -64,7 +64,7 @@ async function getSecurityAnalytics(req, res, next) {
     );
 
     const topDevices = await pool.query(
-      `SELECT device_info, COUNT(*) AS count FROM login_attempts WHERE device_info IS NOT NULL GROUP BY device_info ORDER BY count DESC LIMIT 10`
+      "SELECT device_info, COUNT(*) AS count FROM login_attempts WHERE device_info IS NOT NULL GROUP BY device_info ORDER BY count DESC LIMIT 10"
     );
 
     res.json({ data: { ...q.rows[0], topDevices: topDevices.rows } });

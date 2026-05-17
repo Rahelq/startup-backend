@@ -38,7 +38,7 @@ async function create(data, client = pool) {
 
 async function listForInvestor(investorId) {
   const result = await pool.query(
-    `SELECT * FROM investment_transactions WHERE investor_id = $1 ORDER BY created_at DESC`,
+    "SELECT * FROM investment_transactions WHERE investor_id = $1 ORDER BY created_at DESC",
     [investorId]
   );
   return result.rows;
@@ -46,7 +46,7 @@ async function listForInvestor(investorId) {
 
 async function listForStartup(startupId) {
   const result = await pool.query(
-    `SELECT * FROM investment_transactions WHERE startup_id = $1 ORDER BY created_at DESC`,
+    "SELECT * FROM investment_transactions WHERE startup_id = $1 ORDER BY created_at DESC",
     [startupId]
   );
   return result.rows;

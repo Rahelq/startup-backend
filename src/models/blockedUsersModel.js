@@ -2,7 +2,7 @@ const pool = require("../config/db");
 
 exports.block = async (blockerId, blockedId, reason) => {
   const r = await pool.query(
-    `INSERT INTO blocked_users (blocker_id, blocked_id, reason) VALUES ($1,$2,$3) ON CONFLICT (blocker_id, blocked_id) DO NOTHING RETURNING *`,
+    "INSERT INTO blocked_users (blocker_id, blocked_id, reason) VALUES ($1,$2,$3) ON CONFLICT (blocker_id, blocked_id) DO NOTHING RETURNING *",
     [blockerId, blockedId, reason]
   );
   return r.rows[0] || null;

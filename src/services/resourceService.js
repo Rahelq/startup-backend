@@ -86,7 +86,7 @@ exports.createResource = async ({
 
 exports.listResourcesForRelationship = async ({ relationshipType, relationshipId }) => {
   const q = await pool.query(
-    `SELECT * FROM shared_resources WHERE relationship_type = $1 AND relationship_id = $2 ORDER BY created_at DESC`,
+    "SELECT * FROM shared_resources WHERE relationship_type = $1 AND relationship_id = $2 ORDER BY created_at DESC",
     [relationshipType, relationshipId]
   );
   return q.rows;

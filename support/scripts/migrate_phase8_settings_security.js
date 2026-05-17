@@ -50,7 +50,7 @@ async function run() {
         last_seen_at timestamptz DEFAULT NOW()
       )
     `);
-    await client.query(`CREATE INDEX IF NOT EXISTS idx_user_devices_user ON user_devices(user_id)`);
+    await client.query("CREATE INDEX IF NOT EXISTS idx_user_devices_user ON user_devices(user_id)");
 
     // user_sessions
     await client.query(`
@@ -66,7 +66,7 @@ async function run() {
       )
     `);
     await client.query(
-      `CREATE INDEX IF NOT EXISTS idx_user_sessions_user ON user_sessions(user_id)`
+      "CREATE INDEX IF NOT EXISTS idx_user_sessions_user ON user_sessions(user_id)"
     );
 
     // security_logs

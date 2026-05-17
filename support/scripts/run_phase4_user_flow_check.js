@@ -337,7 +337,7 @@ async function main() {
     console.log("notification_unread_count=", mentorUnreadCount.body.unread_count);
 
     const activityRows = await pool.query(
-      `SELECT COUNT(*)::int AS cnt FROM activity_logs WHERE user_id = $1`,
+      "SELECT COUNT(*)::int AS cnt FROM activity_logs WHERE user_id = $1",
       [mentorId]
     );
     console.log("activity_count=", activityRows.rows[0].cnt);
