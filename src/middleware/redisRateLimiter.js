@@ -5,9 +5,8 @@ try {
   Redis = null;
 }
 
-const inMemoryAttempts = new Map();
-
 function inMemoryLimiter({ windowMs = 15 * 60 * 1000, maxAttempts = 10 } = {}) {
+  const inMemoryAttempts = new Map();
   return (req, res, next) => {
     const key = req.ip || req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     const now = Date.now();

@@ -15,7 +15,6 @@
     "migrate-mentor-profile": "node support/scripts/migrate_mentor_profile.js",
     "migrate-investment-workflow": "node support/scripts/migrate_investment_workflow.js",
     "migrate-phase3-business-workflow": "node support/scripts/migrate_phase3_business_workflow.js",
-    
     "migrate-investor-parity": "node support/scripts/migrate_investor_parity.js",
     "migrate-phase5-transactions": "node support/scripts/migrate_phase5_transactions.js",
     "migrate-phase6-experience": "node support/scripts/migrate_phase6_experience.js",
@@ -35,6 +34,7 @@
     "test-phase5-flow": "node support/scripts/run_phase5_user_flow_check.js",
     "test-phase6-flow": "node support/scripts/run_phase6_user_flow_check.js",
     "test-e2e-platform": "node support/scripts/test_end_to_end_platform_flow.js",
+    "test-profile-upload-smoke": "node support/scripts/test_profile_upload_smoke.js",
     "test-e2e-regression": "jest --runInBand src/__tests__/e2e_platform_flow.test.js",
     "check-postman-collection": "node support/scripts/check_postman_collection.js",
     "verify-backend": "npm run verify-backend-functional",
@@ -48,7 +48,9 @@
     "format": "prettier --write \"src/**/*.js\" \"support/scripts/**/*.js\"",
     "test": "jest --detectOpenHandles --forceExit",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "apply-indexes": "node support/scripts/apply_sql_file.js support/other/002_add_indexes.sql",
+    "ci:newman": "npx newman run \"support/other/StartupConnect Backend API.postman_collection.json\""
   },
   "keywords": [],
   "author": "",
@@ -57,14 +59,18 @@
     "axios": "^1.5.0",
     "bcrypt": "^6.0.0",
     "cloudinary": "^1.41.3",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^7.0.0",
+    "helmet": "^6.2.0",
     "joi": "^18.2.1",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.1.1",
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^8.0.7",
     "pg": "^8.20.0",
+    "pino": "^8.21.0",
     "socket.io": "^4.8.0"
   },
   "devDependencies": {
@@ -75,10 +81,14 @@
     "jest": "^30.4.2",
     "newman": "^5.3.2",
     "nodemon": "^3.1.14",
+    "pino-pretty": "^9.4.1",
     "prettier": "^3.8.3",
     "socket.io-client": "^4.8.0",
     "supertest": "^7.2.2"
   },
+  "files": [
+    "support/other/002_add_indexes.sql"
+  ],
   "jest": {
     "testEnvironment": "node",
     "testMatch": [

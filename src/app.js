@@ -1,5 +1,19 @@
 const express = require("express");
 const pool = require("./config/db");
+let helmet;
+let cors;
+const redisRateLimiter = require("./middleware/redisRateLimiter");
+const logger = require("./utils/logger");
+try {
+  helmet = require("helmet");
+} catch (e) {
+  helmet = null;
+}
+try {
+  cors = require("cors");
+} catch (e) {
+  cors = null;
+}
 
 // Import all routes
 const authRoutes = require("./routes/authRoutes");
@@ -42,6 +56,17 @@ const intelligenceRoutes = require("./routes/intelligenceRoutes");
 const app = express();
 
 // Middleware
+
+// Security headers (optional)
+if (helmet) app.use(helmet());
+
+// CORS (optional)
+const corsOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",") : undefined;
+if (cors) app.use(cors({ origin: corsOrigins || true }));
+
+// Global rate limiting (uses Redis if configured, otherwise in-memory)
+app.use(redisRateLimiter({ windowSec: 60, maxAttempts: 600 }));
+
 app.use(
   express.json({
     verify: (req, res, buf) => {

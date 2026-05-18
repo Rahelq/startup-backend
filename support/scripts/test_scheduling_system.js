@@ -1,6 +1,6 @@
 const pool = require("../config/db");
-const schedulingService = require("../services/mentorshipSchedulingService");
-const reminderService = require("../services/sessionReminderService");
+const schedulingService = require("../../src/services/mentorshipSchedulingService");
+const reminderService = require("../../src/services/sessionReminderService");
 
 async function getAcceptedPair() {
   const result = await pool.query(

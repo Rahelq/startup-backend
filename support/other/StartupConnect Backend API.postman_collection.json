@@ -258,6 +258,58 @@
       ]
     },
     {
+      "name": "User Profile",
+      "item": [
+        {
+          "name": "Get My Profile (Auth User)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/users/profile"
+          }
+        },
+        {
+          "name": "Update My Profile (Auth User)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Tech Hub Founder\",\n  \"phone_number\": \"+251911223344\",\n  \"email\": \"startup@startupconnect.test\"\n}"
+            },
+            "url": "http://localhost:3000/api/users/profile"
+          }
+        },
+        {
+          "name": "Submit Profile for Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{startupToken}}"
+              }
+            ],
+            "url": "http://localhost:3000/api/users/verification/submit"
+          }
+        }
+      ]
+    },
+    {
       "name": "Startup Profile",
       "item": [
         {
@@ -319,6 +371,46 @@
                   "type": "text"
                 },
                 {
+                  "key": "founder_id",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "government_id",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "passport",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "kebele_id",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "business_registration",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "trade_license",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "support_letter",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "tin_certificate",
+                  "type": "file",
+                  "value": ""
+                },
+                {
                   "key": "pitch_deck",
                   "type": "file",
                   "value": ""
@@ -376,7 +468,7 @@
                 },
                 {
                   "key": "business_stage",
-                  "value": "Growth",
+                  "value": "Series A",
                   "type": "text"
                 },
                 {
@@ -403,6 +495,46 @@
                   "key": "funding_needed",
                   "value": "75000",
                   "type": "text"
+                },
+                {
+                  "key": "founder_id",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "government_id",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "passport",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "kebele_id",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "business_registration",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "trade_license",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "support_letter",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "tin_certificate",
+                  "type": "file",
+                  "value": ""
                 },
                 {
                   "key": "pitch_deck",
@@ -512,12 +644,62 @@
                   "type": "text"
                 },
                 {
+                  "key": "skills",
+                  "value": "fundraising, product strategy, leadership",
+                  "type": "text"
+                },
+                {
+                  "key": "industries",
+                  "value": "FinTech, Logistics, HealthTech",
+                  "type": "text"
+                },
+                {
+                  "key": "linkedin_url",
+                  "value": "https://linkedin.com/in/growthmentor",
+                  "type": "text"
+                },
+                {
+                  "key": "portfolio_url",
+                  "value": "https://portfolio.example/mentor",
+                  "type": "text"
+                },
+                {
                   "key": "cv",
                   "type": "file",
                   "value": ""
                 },
                 {
                   "key": "certifications",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "employment_proof",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "government_id",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "passport",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "kebele_id",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "intro_video",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "profile_image",
                   "type": "file",
                   "value": ""
                 }
@@ -588,12 +770,62 @@
                   "type": "text"
                 },
                 {
+                  "key": "skills",
+                  "value": "fundraising, market entry",
+                  "type": "text"
+                },
+                {
+                  "key": "industries",
+                  "value": "FinTech, Agriculture",
+                  "type": "text"
+                },
+                {
+                  "key": "linkedin_url",
+                  "value": "https://linkedin.com/in/updatedmentor",
+                  "type": "text"
+                },
+                {
+                  "key": "portfolio_url",
+                  "value": "https://portfolio.example/mentor-updated",
+                  "type": "text"
+                },
+                {
                   "key": "cv",
                   "type": "file",
                   "value": ""
                 },
                 {
                   "key": "certifications",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "employment_proof",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "government_id",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "passport",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "kebele_id",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "intro_video",
+                  "type": "file",
+                  "value": ""
+                },
+                {
+                  "key": "profile_image",
                   "type": "file",
                   "value": ""
                 }
@@ -677,15 +909,29 @@
               {
                 "key": "Authorization",
                 "value": "Bearer {{investorToken}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
               }
             ],
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"investor_type\": \"Individual\",\n  \"organization_name\": \"ACME Capital\",\n  \"investment_budget\": 100000,\n  \"preferred_industry\": \"FinTech\",\n  \"investment_stage\": \"Seed\",\n  \"country\": \"Ethiopia\",\n  \"portfolio_size\": 5\n}"
+              "mode": "formdata",
+              "formdata": [
+                { "key": "investor_type", "value": "Angel", "type": "text" },
+                { "key": "organization_name", "value": "ACME Capital", "type": "text" },
+                { "key": "investment_budget", "value": "100000", "type": "text" },
+                { "key": "preferred_industry", "value": "Logistics", "type": "text" },
+                { "key": "investment_stage", "value": "Seed", "type": "text" },
+                { "key": "country", "value": "Ethiopia", "type": "text" },
+                { "key": "portfolio_size", "value": "5", "type": "text" },
+                { "key": "investment_focus", "value": "Logistics, FinTech", "type": "text" },
+                { "key": "funding_range_min", "value": "25000", "type": "text" },
+                { "key": "funding_range_max", "value": "250000", "type": "text" },
+                { "key": "bio", "value": "Invests in practical businesses with strong unit economics.", "type": "text" },
+                { "key": "profile_image", "type": "file", "value": "" },
+                { "key": "portfolio", "type": "file", "value": "" },
+                { "key": "government_id", "type": "file", "value": "" },
+                { "key": "business_registration", "type": "file", "value": "" },
+                { "key": "trade_license", "type": "file", "value": "" },
+                { "key": "tin_certificate", "type": "file", "value": "" }
+              ]
             },
             "url": "http://localhost:3000/api/investors/profile"
           }
@@ -719,7 +965,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"investor_type\": \"Institutional\",\n  \"organization_name\": \"ACME Capital Updated\",\n  \"investment_budget\": 150000,\n  \"preferred_industry\": \"HealthTech\",\n  \"investment_stage\": \"Series A\",\n  \"country\": \"Ethiopia\",\n  \"portfolio_size\": 8\n}"
+              "raw": "{\n  \"investor_type\": \"VC\",\n  \"organization_name\": \"ACME Capital Updated\",\n  \"investment_budget\": 150000,\n  \"preferred_industry\": \"HealthTech\",\n  \"investment_stage\": \"Series A\",\n  \"country\": \"Ethiopia\",\n  \"portfolio_size\": 8,\n  \"investment_focus\": \"HealthTech, Logistics\",\n  \"funding_range_min\": 50000,\n  \"funding_range_max\": 300000,\n  \"bio\": \"Updated investor profile focused on scalable Ethiopian startups.\"\n}"
             },
             "url": "http://localhost:3000/api/investors/profile"
           }
@@ -1693,45 +1939,6 @@
               }
             ],
             "url": "http://localhost:3000/api/test/dashboard"
-          }
-        }
-      ]
-    },
-    {
-      "name": "User Profile",
-      "item": [
-        {
-          "name": "Get My Profile",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{startupToken}}"
-              }
-            ],
-            "url": "http://localhost:3000/api/users/profile"
-          }
-        },
-        {
-          "name": "Update My Profile",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{startupToken}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"first_name\": \"Updated\",\n  \"last_name\": \"User\"\n}"
-            },
-            "url": "http://localhost:3000/api/users/profile"
           }
         }
       ]
