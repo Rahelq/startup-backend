@@ -9,7 +9,7 @@ async function getMentorAnalytics(userId) {
       [userId]
     ),
     pool.query(
-      "SELECT COUNT(*)::int AS total, COUNT(*) FILTER (WHERE status='completed')::int AS completed FROM mentorship_sessions WHERE (host_id = $1 OR participant_id = $1)",
+      "SELECT COUNT(*)::int AS total, COUNT(*) FILTER (WHERE ms.status='completed')::int AS completed FROM mentorship_sessions ms LEFT JOIN mentors m ON m.mentor_id = ms.mentor_id LEFT JOIN startups s ON s.startup_id = ms.startup_id WHERE (m.user_id = $1 OR s.user_id = $1)",
       [userId]
     ),
     pool.query(
@@ -37,9 +37,12 @@ async function getMentorAnalytics(userId) {
 
 async function getStartupAnalytics(userId) {
   const [projects, milestones, funding, interactions] = await Promise.all([
-    pool.query("SELECT COUNT(*)::int AS total FROM projects WHERE user_id = $1", [userId]),
     pool.query(
-      "SELECT COUNT(*)::int AS milestones FROM project_milestones pm JOIN projects p ON p.project_id = pm.project_id WHERE p.user_id = $1",
+      "SELECT COUNT(*)::int AS total FROM projects p JOIN startups s ON s.startup_id = p.startup_id WHERE s.user_id = $1",
+      [userId]
+    ),
+    pool.query(
+      "SELECT COUNT(*)::int AS milestones FROM project_milestones pm JOIN projects p ON p.project_id = pm.project_id JOIN startups s ON s.startup_id = p.startup_id WHERE s.user_id = $1",
       [userId]
     ),
     pool.query(
@@ -47,7 +50,7 @@ async function getStartupAnalytics(userId) {
       [userId]
     ),
     pool.query(
-      "SELECT COUNT(*)::int AS interactions FROM interactions WHERE user_id = $1 OR receiver_id = $1",
+      "SELECT COUNT(*)::int AS interactions FROM interaction_requests WHERE sender_id = $1 OR receiver_id = $1",
       [userId]
     ),
   ]);

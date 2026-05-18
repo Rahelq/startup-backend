@@ -22,6 +22,13 @@ async function notifyAdmins(notificationType, title, message, referenceType, ref
 }
 
 async function reportRating({ rating_id, reported_by, reason, description }) {
+  // ensure rating exists
+  const rv = await pool.query("SELECT id FROM ratings WHERE id = $1", [rating_id]);
+  if (!rv.rowCount) {
+    const err = new Error("Rating not found");
+    err.status = 404;
+    throw err;
+  }
   const rpt = await feedbackModel.createReport({ rating_id, reported_by, reason, description });
   await activityService.recordActivity({
     userId: reported_by,

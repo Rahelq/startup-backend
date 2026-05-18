@@ -13,6 +13,7 @@ router.post(
   authenticate,
   requireApproval,
   authorizeRoles("Startup"),
+  upload.array("documents"),
   validate(projectCreateSchema),
   projectController.createProject
 );

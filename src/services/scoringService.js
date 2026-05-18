@@ -11,7 +11,7 @@ async function computeScoresForUser(userId) {
         [userId]
       ),
       pool.query(
-        "SELECT COUNT(*)::int AS completed_sessions FROM mentorship_sessions WHERE (host_id = $1 OR participant_id = $1) AND status='completed'",
+        "SELECT COUNT(*)::int AS completed_sessions FROM mentorship_sessions ms LEFT JOIN mentors m ON m.mentor_id = ms.mentor_id LEFT JOIN startups s ON s.startup_id = ms.startup_id WHERE (m.user_id = $1 OR s.user_id = $1) AND ms.status='completed'",
         [userId]
       ),
       pool.query(

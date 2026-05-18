@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const documentUploadService = require("./documentUploadService");
 
 const MENTORSHIP_OWNER_STATUSES = new Set(["draft", "sent", "cancelled"]);
 const MENTORSHIP_COUNTERPART_STATUSES = new Set(["negotiating", "accepted", "rejected"]);
@@ -325,6 +326,18 @@ async function createMentorshipProposal({ userId, body }) {
     throw err;
   }
 
+  const metadata = {
+    expected_outcomes: parseJsonField(body.expected_outcomes) || null,
+    focus_area: body.focus_area || null,
+    duration_weeks: body.duration_weeks || body.estimated_weeks || null,
+    session_count: body.session_count || null,
+    frequency: body.frequency || null,
+    session_format: body.session_format || null,
+    mode: body.mode || null,
+    scope_objectives: body.scope_objectives || null,
+    milestones: parseJsonField(body.milestones) || null,
+  };
+
   const created = await pool.query(
     `INSERT INTO mentorship_proposals (
        mentorship_id, mentor_user_id, startup_user_id, title, proposal_text, expected_outcomes, estimated_weeks, status
@@ -336,12 +349,32 @@ async function createMentorshipProposal({ userId, body }) {
       rel.startup_id,
       body.title,
       body.proposal_text,
-      JSON.stringify(parseJsonField(body.expected_outcomes)),
+      JSON.stringify(metadata),
       body.estimated_weeks || null,
     ]
   );
 
-  return created.rows[0];
+  const createdObj = created.rows[0];
+
+  // If files provided (from multer), upload and persist as documents linked to this proposal
+  if (body.files && Array.isArray(body.files) && body.files.length) {
+    for (const file of body.files) {
+      try {
+        await documentUploadService.saveUploadedFile(file, {
+          userId,
+          startupId: rel.startup_id,
+          documentType: "mentorship_attachment",
+          contextType: "mentorship_proposal",
+          contextId: createdObj.mentorship_proposal_id,
+          description: file.originalname,
+        });
+      } catch (err) {
+        // non-fatal: continue
+      }
+    }
+  }
+
+  return createdObj;
 }
 
 async function getMentorshipProposal({ userId, mentorshipProposalId }) {
@@ -410,6 +443,15 @@ async function createInvestmentOffer({ userId, body }) {
     throw err;
   }
 
+  const baseTerms = parseJsonField(body.proposed_terms) || {};
+  const terms = Object.assign({}, baseTerms, {
+    investment_type: body.investment_type || null,
+    valuation_post_money: body.valuation_post_money || null,
+    milestones: parseJsonField(body.milestones) || null,
+    response_deadline: body.response_deadline || null,
+    note_to_founder: body.note_to_founder || null,
+  });
+
   const created = await pool.query(
     `INSERT INTO investment_offers (
       investment_id, investor_user_id, startup_user_id, title, offer_text,
@@ -424,11 +466,30 @@ async function createInvestmentOffer({ userId, body }) {
       body.offer_text || null,
       Number(body.funding_amount),
       body.equity_percentage ?? null,
-      JSON.stringify(parseJsonField(body.proposed_terms)),
+      JSON.stringify(terms),
     ]
   );
 
-  return created.rows[0];
+  const createdObj = created.rows[0];
+
+  if (body.files && Array.isArray(body.files) && body.files.length) {
+    for (const file of body.files) {
+      try {
+        await documentUploadService.saveUploadedFile(file, {
+          userId,
+          startupId: rel.startup_id,
+          documentType: "investment_attachment",
+          contextType: "investment_offer",
+          contextId: createdObj.investment_offer_id,
+          description: file.originalname,
+        });
+      } catch (err) {
+        // ignore non-fatal upload errors
+      }
+    }
+  }
+
+  return createdObj;
 }
 
 async function getInvestmentOffer({ userId, investmentOfferId }) {

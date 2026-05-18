@@ -15,7 +15,7 @@ async function setup(req, res, next) {
 async function verify(req, res, next) {
   try {
     const userId = req.user.user_id;
-    const { token } = req.body;
+    const { token } = req.body || {};
     const ok = await twoFactorService.verifyToken(userId, token);
     if (ok) {
       await twoFactorService.enable(userId);
@@ -52,7 +52,7 @@ async function getQRCode(req, res, next) {
 async function redeemBackup(req, res, next) {
   try {
     const userId = req.user.user_id;
-    const { code } = req.body;
+    const { code } = req.body || {};
     const ok = await twoFactorService.redeemBackupCode(userId, code);
     if (ok) {
       await securityLogService.recordEvent(userId, "2fa_backup_redeemed", "medium", req.ip, {});

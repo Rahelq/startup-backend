@@ -3,14 +3,14 @@ const { ratingSchema, reportSchema } = require("../validations/rating");
 const ratingService = require("../services/ratingService");
 
 function validateRatingPayload(req, res, next) {
-  const { error, value } = ratingSchema.validate(req.body);
+  const { error, value } = ratingSchema.validate(req.body || {});
   if (error) return res.status(400).json({ error: error.message });
   req.body = value;
   next();
 }
 
 function validateReportPayload(req, res, next) {
-  const { error, value } = reportSchema.validate(req.body);
+  const { error, value } = reportSchema.validate(req.body || {});
   if (error) return res.status(400).json({ error: error.message });
   req.body = value;
   next();
@@ -18,8 +18,9 @@ function validateReportPayload(req, res, next) {
 
 async function requireRelationshipParticipant(req, res, next) {
   try {
-    const relationshipId = req.body.relationship_id || req.body.relationshipId;
-    const relationshipType = req.body.relationship_type || req.body.relationshipType;
+    const body = req.body || {};
+    const relationshipId = body.relationship_id || body.relationshipId;
+    const relationshipType = body.relationship_type || body.relationshipType;
     if (!relationshipId || !relationshipType) return next();
 
     const reviewerId = req.user.user_id;
@@ -51,16 +52,20 @@ async function requireRelationshipParticipant(req, res, next) {
 
 async function requireCompletedSession(req, res, next) {
   try {
-    const entityType = String(req.body.entity_type || req.body.entityType || "").toLowerCase();
+    const body = req.body || {};
+    const entityType = String(body.entity_type || body.entityType || "").toLowerCase();
     if (!["session", "meeting"].includes(entityType)) return next();
 
-    const entityId = req.body.entity_id || req.body.entityId;
+    const entityId = body.entity_id || body.entityId;
     const reviewerId = req.user.user_id;
     const result = await pool.query(
       `SELECT 1 FROM mentorship_sessions
        WHERE mentorship_session_id = $1
          AND status = 'completed'
-         AND (host_id = $2 OR participant_id = $2)`,
+         AND (
+           mentor_id IN (SELECT mentor_id FROM mentors WHERE user_id = $2)
+           OR startup_id IN (SELECT startup_id FROM startups WHERE user_id = $2)
+         )`,
       [entityId, reviewerId]
     );
     if (!result.rows.length) {
@@ -74,9 +79,10 @@ async function requireCompletedSession(req, res, next) {
 
 async function preventDuplicateRatings(req, res, next) {
   try {
+    const body = req.body || {};
     const reviewerId = req.user.user_id;
-    const entityType = req.body.entity_type || req.body.entityType;
-    const entityId = req.body.entity_id || req.body.entityId;
+    const entityType = body.entity_type || body.entityType;
+    const entityId = body.entity_id || body.entityId;
     const result = await pool.query(
       "SELECT id FROM ratings WHERE reviewer_id = $1 AND entity_type = $2 AND entity_id = $3 AND status IN ('active','edited') LIMIT 1",
       [reviewerId, entityType, entityId]
@@ -92,13 +98,14 @@ async function preventDuplicateRatings(req, res, next) {
 
 async function validateRatingPermission(req, res, next) {
   try {
+    const body = req.body || {};
     const allowed = await ratingService.canUserRate({
       reviewerId: req.user.user_id,
-      reviewedUserId: req.body.reviewed_user_id,
-      relationshipId: req.body.relationship_id,
-      relationshipType: req.body.relationship_type,
-      entityType: req.body.entity_type,
-      entityId: req.body.entity_id,
+      reviewedUserId: body.reviewed_user_id,
+      relationshipId: body.relationship_id,
+      relationshipType: body.relationship_type,
+      entityType: body.entity_type,
+      entityId: body.entity_id,
     });
     if (!allowed) {
       return res.status(403).json({ error: "You are not allowed to rate this user or entity" });

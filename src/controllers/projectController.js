@@ -96,6 +96,31 @@ RETURNING *
       message: "Project created successfully",
       project: result.rows[0],
     });
+    // handle uploaded files (persist to documents and link to project)
+    if (req.files && Array.isArray(req.files) && req.files.length) {
+      const projectId = result.rows[0].project_id;
+      for (const file of req.files) {
+        try {
+          const saved = await documentUploadService.saveUploadedFile(file, {
+            userId,
+            startupId: startup_id,
+            documentType: req.body?.document_type || "project_document",
+            contextType: "project",
+            contextId: projectId,
+            description: file.originalname,
+          });
+
+          await pool.query(
+            `INSERT INTO project_documents (project_id, document_id)
+             VALUES ($1, $2)
+             ON CONFLICT DO NOTHING`,
+            [projectId, saved.document_id || saved.documentId || saved.document_id]
+          );
+        } catch (err) {
+          // non-fatal; continue with other files
+        }
+      }
+    }
   } catch (err) {
     res.status(500).send(err.message);
   }

@@ -8,9 +8,9 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+            node-version: 20
     steps:
-      - uses: actions/checkout@v3
+        - run: npm ci
       - uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -35,12 +35,12 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
-      - run: npm install
+      - run: npm ci
       - run: npm run lint
       - name: Run tests
         env:
@@ -75,6 +75,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v3
-      - name: Deploy to production
-        run: echo "Deploy logic here (e.g., docker push, kubectl apply, render deployment)"
+      - name: Trigger Render deploy hook
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "RENDER_DEPLOY_HOOK_URL is not set" >&2
+            exit 1
+          fi
+          curl -fsSL -X POST "$RENDER_DEPLOY_HOOK_URL"

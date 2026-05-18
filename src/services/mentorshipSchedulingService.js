@@ -41,7 +41,9 @@ function normalizeAvailabilitySlots(raw) {
     slots = [slots];
   }
   if (!Array.isArray(slots)) {
-    throw new Error("Availability must be an array of weekly slots");
+    const err = new Error("Availability must be an array of weekly slots");
+    err.statusCode = 400;
+    throw err;
   }
 
   return slots
@@ -50,13 +52,19 @@ function normalizeAvailabilitySlots(raw) {
       const startTime = parseTimeString(slot.start_time ?? slot.startTime);
       const endTime = parseTimeString(slot.end_time ?? slot.endTime);
       if (day === null || day < 0 || day > 6) {
-        throw new Error("Each availability slot needs a day_of_week between 0 and 6");
+        const err = new Error("Each availability slot needs a day_of_week between 0 and 6");
+        err.statusCode = 400;
+        throw err;
       }
       if (!startTime || !endTime) {
-        throw new Error("Each availability slot needs valid start_time and end_time");
+        const err = new Error("Each availability slot needs valid start_time and end_time");
+        err.statusCode = 400;
+        throw err;
       }
       if (timeToMinutes(endTime) <= timeToMinutes(startTime)) {
-        throw new Error("Availability slot end_time must be after start_time");
+        const err = new Error("Availability slot end_time must be after start_time");
+        err.statusCode = 400;
+        throw err;
       }
       return {
         day_of_week: day,

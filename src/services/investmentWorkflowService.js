@@ -64,19 +64,31 @@ exports.createInvestmentOffer = async ({ userId, role, body }) => {
 
   const interaction = interactionRes.rows[0];
 
-  const investmentRes = await pool.query(
-    `INSERT INTO investment_relationships 
+  let investmentRes;
+  try {
+    investmentRes = await pool.query(
+      `INSERT INTO investment_relationships 
 		 (investor_id, startup_id, interaction_request_id, funding_amount, equity_percentage, status)
 		 VALUES ($1, $2, $3, $4, $5, 'pending')
 		 RETURNING investment_id`,
-    [
-      role === "Investor" ? userId : receiver_id,
-      role === "Startup" ? userId : receiver_id,
-      interaction.interaction_id,
-      fundingAmount,
-      equityPct,
-    ]
-  );
+      [
+        role === "Investor" ? userId : receiver_id,
+        role === "Startup" ? userId : receiver_id,
+        interaction.interaction_id,
+        fundingAmount,
+        equityPct,
+      ]
+    );
+  } catch (error) {
+    if (error && error.code === "23505") {
+      const err = new Error(
+        "Investment relationship already exists for this investor-startup pair"
+      );
+      err.status = 409;
+      throw err;
+    }
+    throw error;
+  }
 
   await pool.query(
     `INSERT INTO interaction_audit 

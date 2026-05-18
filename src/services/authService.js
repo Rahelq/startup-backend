@@ -73,7 +73,20 @@ async function loginUser({ email, password, ip = null, device = {} }) {
     failureReason: isMatch ? null : "invalid_password",
   });
   if (!isMatch) throw { status: 401, message: "Invalid password" };
-  if (accountBlocked(user)) throw { status: 403, message: "Account disabled" };
+  if (accountBlocked(user)) {
+    try {
+      console.error("Blocked login attempt", {
+        user_id: user.user_id,
+        email: user.email,
+        is_active: user.is_active,
+        is_approved: user.is_approved,
+        verification_status: user.verification_status,
+        account_status: user.account_status,
+        deleted_at: user.deleted_at,
+      });
+    } catch (e) {}
+    throw { status: 403, message: "Account disabled" };
+  }
 
   const token = jwt.sign({ user_id: user.user_id, role: user.role }, JWT_SECRET, {
     expiresIn: "1d",

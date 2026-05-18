@@ -20,7 +20,11 @@ function generateBackupCodes(count = 6) {
 }
 
 async function createSetup(userId) {
-  if (!speakeasy) throw new Error("speakeasy not installed");
+  if (!speakeasy) {
+    const err = new Error("speakeasy not installed");
+    err.status = 501;
+    throw err;
+  }
   const secret = speakeasy.generateSecret({ length: 20 });
   const backup_codes = generateBackupCodes();
   const client = await pool.connect();

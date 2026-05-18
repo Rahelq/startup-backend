@@ -1,0 +1,797 @@
+{
+  "info": {
+    "name": "StartupConnect End-to-End Demo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "startupEmail", "value": "startup@startupconnect.test" },
+    { "key": "startupPassword", "value": "Demo123!" },
+    { "key": "mentorEmail", "value": "mentor@startupconnect.test" },
+    { "key": "mentorPassword", "value": "Demo123!" },
+    { "key": "investorEmail", "value": "investor@startupconnect.test" },
+    { "key": "investorPassword", "value": "Demo123!" },
+    { "key": "adminEmail", "value": "admin@startupconnect.test" },
+    { "key": "adminPassword", "value": "Demo123!" },
+    { "key": "startupToken", "value": "" },
+    { "key": "mentorToken", "value": "" },
+    { "key": "investorToken", "value": "" },
+    { "key": "adminToken", "value": "" },
+    { "key": "userId", "value": "1" },
+    { "key": "startupId", "value": "1" },
+    { "key": "mentorId", "value": "1" },
+    { "key": "investorId", "value": "1" },
+    { "key": "projectId", "value": "1" },
+    { "key": "milestoneId", "value": "1" },
+    { "key": "mentorshipId", "value": "1" },
+    { "key": "sessionId", "value": "1" },
+    { "key": "conversationId", "value": "1" },
+    { "key": "messageId", "value": "1" },
+    { "key": "interactionId", "value": "1" },
+    { "key": "notificationId", "value": "1" },
+    { "key": "investmentId", "value": "1" },
+    { "key": "paymentId", "value": "1" },
+    { "key": "paymentTxRef", "value": "" },
+    { "key": "reportId", "value": "1" },
+    { "key": "ratingId", "value": "1" },
+    { "key": "resourceId", "value": "1" },
+    { "key": "refundId", "value": "1" },
+    { "key": "documentId", "value": "1" },
+    { "key": "refreshToken", "value": "" },
+    { "key": "otherUserId", "value": "2" },
+    { "key": "txRef", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "00 Bootstrap",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 Auth",
+      "item": [
+        {
+          "name": "Register Startup",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"Demo\",\n  \"last_name\": \"Startup\",\n  \"email\": \"startup@startupconnect.test\",\n  \"password\": \"Demo123!\",\n  \"role\": \"Startup\"\n}" },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Register Mentor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"Demo\",\n  \"last_name\": \"Mentor\",\n  \"email\": \"mentor@startupconnect.test\",\n  \"password\": \"Demo123!\",\n  \"role\": \"Mentor\"\n}" },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Register Investor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"Demo\",\n  \"last_name\": \"Investor\",\n  \"email\": \"investor@startupconnect.test\",\n  \"password\": \"Demo123!\",\n  \"role\": \"Investor\"\n}" },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Register Secondary Startup",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"Demo\",\n  \"last_name\": \"Startup Two\",\n  \"email\": \"startup2@startupconnect.test\",\n  \"password\": \"Demo123!\",\n  \"role\": \"Startup\"\n}" },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "Login Startup",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{startupEmail}}\",\n  \"password\": \"{{startupPassword}}\"\n}" },
+            "url": "{{baseUrl}}/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const token = body.token || body.accessToken || (body.data && (body.data.token || body.data.accessToken));",
+                  "if (token) { pm.collectionVariables.set('startupToken', token); pm.environment.set('startupToken', token); }",
+                  "const startupUserId = body.user_id || body.userId || body.id || (body.user && (body.user.user_id || body.user.userId || body.user.id)) || (body.data && (body.data.user_id || body.data.userId || body.data.id || (body.data.user && (body.data.user.user_id || body.data.user.userId || body.data.user.id))));",
+                  "if (startupUserId) { pm.collectionVariables.set('userId', String(startupUserId)); pm.collectionVariables.set('startupId', String(startupUserId)); pm.environment.set('userId', String(startupUserId)); pm.environment.set('startupId', String(startupUserId)); }",
+                  "const refreshToken = body.refreshToken || (body.data && body.data.refreshToken);",
+                  "if (refreshToken) { pm.collectionVariables.set('refreshToken', refreshToken); pm.environment.set('refreshToken', refreshToken); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Mentor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{mentorEmail}}\",\n  \"password\": \"{{mentorPassword}}\"\n}" },
+            "url": "{{baseUrl}}/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const token = body.token || body.accessToken || (body.data && (body.data.token || body.data.accessToken));",
+                  "if (token) { pm.collectionVariables.set('mentorToken', token); pm.environment.set('mentorToken', token); }",
+                  "const mentorUserId = body.user_id || body.userId || body.id || (body.user && (body.user.user_id || body.user.userId || body.user.id)) || (body.data && (body.data.user_id || body.data.userId || body.data.id || (body.data.user && (body.data.user.user_id || body.data.user.userId || body.data.user.id))));",
+                  "if (mentorUserId) { pm.collectionVariables.set('mentorId', String(mentorUserId)); pm.environment.set('mentorId', String(mentorUserId)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Investor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{investorEmail}}\",\n  \"password\": \"{{investorPassword}}\"\n}" },
+            "url": "{{baseUrl}}/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const token = body.token || body.accessToken || (body.data && (body.data.token || body.data.accessToken));",
+                  "if (token) { pm.collectionVariables.set('investorToken', token); pm.environment.set('investorToken', token); }",
+                  "const investorUserId = body.user_id || body.userId || body.id || (body.user && (body.user.user_id || body.user.userId || body.user.id)) || (body.data && (body.data.user_id || body.data.userId || body.data.id || (body.data.user && (body.data.user.user_id || body.data.user.userId || body.data.user.id))));",
+                  "if (investorUserId) { pm.collectionVariables.set('investorId', String(investorUserId)); pm.environment.set('investorId', String(investorUserId)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}" },
+            "url": "{{baseUrl}}/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const token = body.token || body.accessToken || (body.data && (body.data.token || body.data.accessToken));",
+                  "if (token) { pm.collectionVariables.set('adminToken', token); pm.environment.set('adminToken', token); }",
+                  "const adminUserId = body.user_id || body.userId || body.id || (body.user && (body.user.user_id || body.user.userId || body.user.id)) || (body.data && (body.data.user_id || body.data.userId || body.data.id || (body.data.user && (body.data.user.user_id || body.data.user.userId || body.data.user.id))));",
+                  "if (adminUserId) { pm.collectionVariables.set('adminUserId', String(adminUserId)); pm.environment.set('adminUserId', String(adminUserId)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}" },
+            "url": "{{baseUrl}}/api/auth/refresh"
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{startupEmail}}\"\n}" },
+            "url": "{{baseUrl}}/api/auth/forgot-password"
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"password\": \"Demo123!\"\n}" },
+            "url": "{{baseUrl}}/api/auth/reset-password"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}" },
+            "url": "{{baseUrl}}/api/auth/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Startup Flow",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{startupToken}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Get My User Profile",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/users/profile" }
+        },
+        {
+          "name": "Update My User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"full_name\": \"Demo Startup\",\n  \"phone_number\": \"+251900000001\"\n}" },
+            "url": "{{baseUrl}}/api/users/profile"
+          }
+        },
+        {
+          "name": "Submit Profile For Review",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/users/verification/submit" }
+        },
+        {
+          "name": "Create Startup Profile",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"startup_name\": \"Demo Startup\",\n  \"industry\": \"FinTech\",\n  \"description\": \"Demo startup for end-to-end testing\",\n  \"business_stage\": \"Seed\",\n  \"founded_year\": 2024,\n  \"team_size\": 5,\n  \"location\": \"Addis Ababa\",\n  \"website\": \"https://startupconnect.test\",\n  \"funding_needed\": 50000\n}" },
+            "url": "{{baseUrl}}/api/startups/profile"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const id = body.id || body.startupId || (body.data && (body.data.id || body.data.startupId));",
+                  "if (id) pm.collectionVariables.set('startupId', String(id));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Startup Profile",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/startups/profile" }
+        },
+        {
+          "name": "Update Startup Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"description\": \"Updated startup profile for demo flow\",\n  \"team_size\": 6\n}" },
+            "url": "{{baseUrl}}/api/startups/profile"
+          }
+        },
+        {
+          "name": "Discover Mentors and Investors",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/startups/discover" }
+        },
+        {
+          "name": "Startup Recommendations",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/startups/recommendations" }
+        },
+        {
+          "name": "Startup Dashboard",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/startups/dashboard" }
+        },
+        {
+          "name": "Startup Analytics",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/startup" }
+        },
+        {
+          "name": "Startup Reputation",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/reputation/{{startupId}}" }
+        },
+        {
+          "name": "Mentor Recommendations",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/recommendations/mentors" }
+        }
+      ]
+    },
+    {
+      "name": "03 Mentor Flow",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{mentorToken}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Get Mentor Profile",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/mentors/profile" }
+        },
+        {
+          "name": "Create Mentor Profile",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"full_name\": \"Demo Mentor\",\n  \"expertise_area\": \"Product Strategy\",\n  \"years_experience\": 10,\n  \"hourly_rate\": 120,\n  \"country\": \"ET\",\n  \"bio\": \"Mentor for end-to-end demo\",\n  \"availability\": \"Weekdays\",\n  \"skills\": \"Strategy, fundraising, product\",\n  \"industries\": \"FinTech, SaaS\",\n  \"city\": \"Addis Ababa\",\n  \"linkedin_url\": \"https://linkedin.com/in/demo-mentor\"\n}" },
+            "url": "{{baseUrl}}/api/mentors/profile"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const id = body.id || body.mentorId || (body.data && (body.data.id || body.data.mentorId));",
+                  "if (id) pm.collectionVariables.set('mentorId', String(id));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Mentor Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"headline\": \"Growth and fundraising mentor\",\n  \"hourly_rate\": 150\n}" },
+            "url": "{{baseUrl}}/api/mentors/profile"
+          }
+        },
+        {
+          "name": "List All Mentors",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/mentors" }
+        },
+        {
+          "name": "Get Mentor By Id",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/mentors/{{mentorId}}" }
+        },
+        {
+          "name": "Mentor Availability Me",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship/availability/me" }
+        },
+        {
+          "name": "Update Mentor Availability",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"availability\": {\n    \"monday\": [{ \"start\": \"09:00\", \"end\": \"12:00\" }],\n    \"wednesday\": [{ \"start\": \"13:00\", \"end\": \"17:00\" }]\n  }\n}" },
+            "url": "{{baseUrl}}/api/mentorship/availability/me"
+          }
+        },
+        {
+          "name": "Get Startup Analytics for Mentor",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/mentor" }
+        },
+        {
+          "name": "Mentor Reputation",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/reputation/{{mentorId}}" }
+        }
+      ]
+    },
+    {
+      "name": "04 Investor Flow",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{investorToken}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Get Investor Profile",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/investors/profile" }
+        },
+        {
+          "name": "Create Investor Profile",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"investor_type\": \"Angel\",\n  \"organization_name\": \"Demo Capital\",\n  \"investment_budget\": 250000,\n  \"preferred_industry\": \"FinTech\",\n  \"investment_stage\": \"Seed\",\n  \"country\": \"ET\",\n  \"portfolio_size\": 12,\n  \"investment_focus\": \"B2B SaaS and fintech\",\n  \"funding_range_min\": 25000,\n  \"funding_range_max\": 250000,\n  \"bio\": \"Demo investor profile\"\n}" },
+            "url": "{{baseUrl}}/api/investors/profile"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const id = body.id || body.investorId || (body.data && (body.data.id || body.data.investorId));",
+                  "if (id) pm.collectionVariables.set('investorId', String(id));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Investor Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"investment_budget\": 300000,\n  \"portfolio_size\": 13\n}" },
+            "url": "{{baseUrl}}/api/investors/profile"
+          }
+        },
+        {
+          "name": "Discover Startups",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/investors/startups" }
+        },
+        {
+          "name": "Startup Recommendations for Investor",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/investors/startups/recommendations" }
+        },
+        {
+          "name": "Get Startup Detail",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/investors/startups/{{startupId}}" }
+        },
+        {
+          "name": "Investor Portfolio",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/investors/portfolio" }
+        },
+        {
+          "name": "Investor Analytics",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/startup/{{startupId}}" }
+        },
+        {
+          "name": "Investor Reputation",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/reputation/{{investorId}}" }
+        }
+      ]
+    },
+    {
+      "name": "05 Projects",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{startupToken}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"project_title\": \"Demo Project\",\n  \"description\": \"Project used for the end-to-end demo\",\n  \"funding_goal\": 50000,\n  \"category\": \"Platform\",\n  \"stage\": \"MVP\",\n  \"problem\": \"Manual workflow\",\n  \"solution\": \"Automated workflow\"\n}" },
+            "url": "{{baseUrl}}/api/projects/create"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "let body = {};",
+                  "try { body = pm.response.json(); } catch (e) {}",
+                  "const id = body.id || body.projectId || (body.data && (body.data.id || body.data.projectId));",
+                  "if (id) pm.collectionVariables.set('projectId', String(id));"
+                ]
+              }
+            }
+          ]
+        },
+        { "name": "My Projects", "request": { "method": "GET", "url": "{{baseUrl}}/api/projects/mine" } },
+        { "name": "All Projects", "request": { "method": "GET", "url": "{{baseUrl}}/api/projects/all" } },
+        { "name": "Project Details", "request": { "method": "GET", "url": "{{baseUrl}}/api/projects/{{projectId}}" } },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"project_title\": \"Demo Project Updated\",\n  \"funding_goal\": 75000,\n  \"status\": \"active\"\n}" },
+            "url": "{{baseUrl}}/api/projects/{{projectId}}"
+          }
+        },
+        {
+          "name": "Create Project Milestone",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"milestone_title\": \"Launch onboarding\",\n  \"description\": \"Complete the first release\",\n  \"target_date\": \"2026-06-30T00:00:00.000Z\",\n  \"deliverables\": \"Working onboarding flow\",\n  \"success_criteria\": \"Users can sign up and complete onboarding\",\n  \"estimated_cost\": 5000\n}" },
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/milestones"
+          }
+        },
+        { "name": "List Project Milestones", "request": { "method": "GET", "url": "{{baseUrl}}/api/projects/{{projectId}}/milestones" } },
+        {
+          "name": "Update Project Milestone",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"completed\",\n  \"progress_notes\": \"Milestone completed in demo flow\"\n}" },
+            "url": "{{baseUrl}}/api/projects/milestones/{{milestoneId}}"
+          }
+        },
+        {
+          "name": "Upload Project Document",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"document_name\": \"Project Plan\",\n  \"document_type\": \"plan\",\n  \"file_url\": \"https://example.com/project-plan.pdf\"\n}" },
+            "url": "{{baseUrl}}/api/projects/{{projectId}}/documents"
+          }
+        },
+        { "name": "List Project Documents", "request": { "method": "GET", "url": "{{baseUrl}}/api/projects/{{projectId}}/documents" } },
+        { "name": "Project Workflow Create", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"project_name\": \"Workflow Project\",\n  \"funding_goal\": 90000,\n  \"status\": \"draft\"\n}" }, "url": "{{baseUrl}}/api/projects-workflow/projects" } },
+        { "name": "Project Workflow Status", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" }, "url": "{{baseUrl}}/api/projects-workflow/projects/{{projectId}}/status" } },
+        { "name": "Project Workflow Milestones", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"milestone_title\": \"Ship v1\",\n  \"estimated_cost\": 3000\n}" }, "url": "{{baseUrl}}/api/projects-workflow/projects/{{projectId}}/milestones" } },
+        { "name": "Project Workflow Documents", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"document_name\": \"Deck\",\n  \"file_url\": \"https://example.com/deck.pdf\"\n}" }, "url": "{{baseUrl}}/api/projects-workflow/projects/{{projectId}}/documents" } },
+        { "name": "Project Workflow Activity", "request": { "method": "POST", "url": "{{baseUrl}}/api/projects-workflow/projects/{{projectId}}/activity" } }
+      ]
+    },
+    {
+      "name": "06 Mentorship",
+      "item": [
+        {
+          "name": "Startup Mentorship Requests",
+          "auth": {
+            "type": "bearer",
+            "bearer": [{ "key": "token", "value": "{{startupToken}}", "type": "string" }]
+          },
+          "item": [
+            { "name": "Create Legacy Mentorship Request", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"mentor_id\": {{mentorId}},\n  \"subject\": \"Product-market fit\",\n  \"message\": \"Need guidance on launch strategy\"\n}" }, "url": "{{baseUrl}}/api/mentorship/requests" } },
+            { "name": "My Outgoing Mentorship Requests", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship/requests/outgoing" } },
+            { "name": "Book Legacy Mentorship Session", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"mentorship_request_id\": {{mentorshipId}},\n  \"session_date\": \"2026-06-15T10:00:00.000Z\",\n  \"duration\": 60,\n  \"notes\": \"Kickoff session\"\n}" }, "url": "{{baseUrl}}/api/mentorship/sessions" } },
+            { "name": "Legacy Mentorship History", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship/history" } },
+            { "name": "Legacy Payments", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship/payments" } },
+            { "name": "Legacy Resources", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship/resources" } },
+            { "name": "Legacy Progress", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship/progress" } },
+            { "name": "Legacy Conversation", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship/chat/conversation/{{mentorId}}" } }
+          ]
+        },
+        {
+          "name": "Mentor Mentorship Workflows",
+          "auth": {
+            "type": "bearer",
+            "bearer": [{ "key": "token", "value": "{{mentorToken}}", "type": "string" }]
+          },
+          "item": [
+            { "name": "Mentor Incoming Requests", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship/requests/incoming" } },
+            { "name": "Mentor Availability Detail", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship/availability/{{mentorId}}" } },
+            { "name": "Respond To Mentorship Request", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"accepted\",\n  \"message\": \"Happy to mentor\"\n}" }, "url": "{{baseUrl}}/api/mentorship/requests/{{mentorshipId}}/respond" } },
+            { "name": "Create Mentorship Session", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"mentorship_request_id\": {{mentorshipId}},\n  \"session_date\": \"2026-06-15T10:00:00.000Z\",\n  \"duration\": 60,\n  \"notes\": \"Mentor-led session\"\n}" }, "url": "{{baseUrl}}/api/mentorship/sessions" } },
+            { "name": "Confirm Mentorship Session", "request": { "method": "POST", "url": "{{baseUrl}}/api/mentorship/sessions/{{sessionId}}/confirm" } },
+            { "name": "Reschedule Mentorship Session", "request": { "method": "PUT", "url": "{{baseUrl}}/api/mentorship/sessions/{{sessionId}}/reschedule" } },
+            { "name": "Cancel Mentorship Session", "request": { "method": "POST", "url": "{{baseUrl}}/api/mentorship/sessions/{{sessionId}}/cancel" } },
+            { "name": "Share Mentorship Resource", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"mentorship_id\": {{mentorshipId}},\n  \"resource_title\": \"Starter guide\",\n  \"resource_url\": \"https://example.com/resource.pdf\",\n  \"resource_type\": \"pdf\"\n}" }, "url": "{{baseUrl}}/api/mentorship/resources" } },
+            { "name": "Mentor My Mentorships", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship-workflow/my-mentorships" } },
+            { "name": "Mentor Pricing", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"hourly_rate\": 150,\n  \"session_duration_minutes\": 60,\n  \"availability_json\": { \"monday\": [\"09:00-12:00\"] }\n}" }, "url": "{{baseUrl}}/api/mentorship-workflow/mentors/{{mentorshipId}}/pricing" } },
+            { "name": "Mentor Workflow Sessions", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship-workflow/sessions" } }
+          ]
+        },
+        {
+          "name": "Mentorship Shared Workflow",
+          "auth": {
+            "type": "bearer",
+            "bearer": [{ "key": "token", "value": "{{startupToken}}", "type": "string" }]
+          },
+          "item": [
+            { "name": "Workflow Mentorship Offer", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"receiver_id\": {{mentorId}},\n  \"message\": \"Need mentorship on growth and fundraising\",\n  \"type\": \"request\"\n}" }, "url": "{{baseUrl}}/api/mentorship-workflow/offers" } },
+            { "name": "Get Mentorship Offer", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship-workflow/offers/{{mentorshipId}}" } },
+            { "name": "Book Workflow Session", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"mentorship_id\": {{mentorshipId}},\n  \"session_start_at\": \"2026-06-20T10:00:00.000Z\",\n  \"session_end_at\": \"2026-06-20T11:00:00.000Z\",\n  \"agenda\": \"Demo agenda\"\n}" }, "url": "{{baseUrl}}/api/mentorship-workflow/sessions/book" } },
+            { "name": "Workflow Session Notes", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"notes\": \"Session went well\",\n  \"attendance_status\": \"attended\",\n  \"progress_topics\": [\"fundraising\", \"product\"]\n}" }, "url": "{{baseUrl}}/api/mentorship-workflow/sessions/{{sessionId}}/notes" } },
+            { "name": "Workflow Resources", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"mentorship_id\": {{mentorshipId}},\n  \"resource_title\": \"Mentor notes\",\n  \"resource_url\": \"https://example.com/notes.pdf\",\n  \"resource_type\": \"pdf\"\n}" }, "url": "{{baseUrl}}/api/mentorship-workflow/resources" } },
+            { "name": "Workflow Received Mentorships", "request": { "method": "GET", "url": "{{baseUrl}}/api/mentorship-workflow/received" } }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 Investment",
+      "item": [
+        {
+          "name": "Investor Investment Legacy",
+          "auth": {
+            "type": "bearer",
+            "bearer": [{ "key": "token", "value": "{{investorToken}}", "type": "string" }]
+          },
+          "item": [
+            { "name": "Create Investment Request", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"startup_id\": {{startupId}},\n  \"amount\": 10000,\n  \"equity\": 5,\n  \"description\": \"Seed investment request\"\n}" }, "url": "{{baseUrl}}/api/investments/request" } },
+            { "name": "List Investment Requests", "request": { "method": "GET", "url": "{{baseUrl}}/api/investments/requests" } },
+            { "name": "Respond To Investment Request", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"accepted\",\n  \"message\": \"Moving ahead\"\n}" }, "url": "{{baseUrl}}/api/investments/requests/{{investmentId}}/respond" } },
+            { "name": "Record Investment Payment", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"investment_id\": {{investmentId}},\n  \"amount\": 10000,\n  \"payment_method\": \"bank_transfer\",\n  \"transaction_reference\": \"INV-001\",\n  \"notes\": \"Demo payment\"\n}" }, "url": "{{baseUrl}}/api/investments/requests/{{investmentId}}/payments" } },
+            { "name": "List Investment Payments", "request": { "method": "GET", "url": "{{baseUrl}}/api/investments/payments" } },
+            { "name": "Submit Investor Feedback", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Strong startup\"\n}" }, "url": "{{baseUrl}}/api/investments/requests/{{investmentId}}/feedback" } },
+            { "name": "List Startup Feedback", "request": { "method": "GET", "url": "{{baseUrl}}/api/investments/feedback" } }
+          ]
+        },
+        {
+          "name": "Investment Workflow",
+          "auth": {
+            "type": "bearer",
+            "bearer": [{ "key": "token", "value": "{{investorToken}}", "type": "string" }]
+          },
+          "item": [
+            { "name": "Create Investment Offer", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"receiver_id\": {{startupId}},\n  \"funding_amount\": 15000,\n  \"equity_percentage\": 6,\n  \"message\": \"Interested in this round\",\n  \"type\": \"invite\"\n}" }, "url": "{{baseUrl}}/api/investment-workflow/offers" } },
+            { "name": "Get Investment Offer", "request": { "method": "GET", "url": "{{baseUrl}}/api/investment-workflow/offers/{{investmentId}}" } },
+            { "name": "Counter Offer", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"funding_amount\": 14000,\n  \"equity_percentage\": 5.5,\n  \"message\": \"Can we adjust slightly?\"\n}" }, "url": "{{baseUrl}}/api/investment-workflow/investments/{{investmentId}}/counter-offer" } },
+            { "name": "Respond To Offer", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"accepted\"\n}" }, "url": "{{baseUrl}}/api/investment-workflow/investments/{{investmentId}}/respond" } },
+            { "name": "Negotiation History", "request": { "method": "GET", "url": "{{baseUrl}}/api/investment-workflow/investments/{{investmentId}}/negotiation" } },
+            { "name": "Investor Portfolio Workflow", "request": { "method": "GET", "url": "{{baseUrl}}/api/investment-workflow/portfolio" } },
+            { "name": "Startup Received Workflow Investments", "request": { "method": "GET", "url": "{{baseUrl}}/api/investment-workflow/received" } },
+            { "name": "Record Workflow Payment", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"amount\": 15000,\n  \"payment_status\": \"completed\",\n  \"payment_method\": \"bank_transfer\",\n  \"notes\": \"Escrow funded\"\n}" }, "url": "{{baseUrl}}/api/investment-workflow/investments/{{investmentId}}/payment" } },
+            { "name": "Investment Tracking Event", "request": { "method": "POST", "url": "{{baseUrl}}/api/investment-workflow/investments/{{investmentId}}/tracking" } },
+            { "name": "List Investment Tracking", "request": { "method": "GET", "url": "{{baseUrl}}/api/investment-workflow/investments/{{investmentId}}/tracking" } },
+            { "name": "Attach Investment Document", "request": { "method": "POST", "url": "{{baseUrl}}/api/investment-workflow/investments/{{investmentId}}/documents" } },
+            { "name": "Submit Startup Feedback", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Excellent investor\"\n}" }, "url": "{{baseUrl}}/api/investment-workflow/investments/{{investmentId}}/feedback" } },
+            { "name": "List Startup Feedback Workflow", "request": { "method": "GET", "url": "{{baseUrl}}/api/investment-workflow/feedback" } }
+          ]
+        },
+        {
+          "name": "Startup Investment View",
+          "auth": {
+            "type": "bearer",
+            "bearer": [{ "key": "token", "value": "{{startupToken}}", "type": "string" }]
+          },
+          "item": [
+            { "name": "List Startup Feedback Legacy", "request": { "method": "GET", "url": "{{baseUrl}}/api/investments/feedback" } },
+            { "name": "Legacy Payments View", "request": { "method": "GET", "url": "{{baseUrl}}/api/investments/payments" } }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08 Collaboration",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{startupToken}}", "type": "string" }]
+      },
+      "item": [
+        { "name": "Create Conversation", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"user1_id\": {{startupId}},\n  \"user2_id\": {{mentorId}},\n  \"conversation_type\": \"mentorship\"\n}" }, "url": "{{baseUrl}}/api/conversations" } },
+        { "name": "List My Conversations", "request": { "method": "GET", "url": "{{baseUrl}}/api/conversations/{{startupId}}" } },
+        { "name": "Conversation By Participants", "request": { "method": "GET", "url": "{{baseUrl}}/api/conversations/{{startupId}}/with/{{mentorId}}" } },
+        { "name": "Send Message", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"receiver_id\": {{mentorId}},\n  \"message\": \"Hello from the startup side\",\n  \"message_type\": \"text\"\n}" }, "url": "{{baseUrl}}/api/messages" } },
+        { "name": "Unread Messages Count", "request": { "method": "GET", "url": "{{baseUrl}}/api/messages/unread" } },
+        { "name": "Get Messages", "request": { "method": "GET", "url": "{{baseUrl}}/api/messages/{{conversationId}}" } },
+        { "name": "Mark Messages Seen", "request": { "method": "PUT", "url": "{{baseUrl}}/api/messages/seen/{{conversationId}}" } },
+        { "name": "Edit Message", "request": { "method": "PUT", "url": "{{baseUrl}}/api/messages/{{messageId}}" } },
+        { "name": "Delete Message", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/messages/{{messageId}}" } },
+        { "name": "Create Interaction", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"receiver_id\": {{mentorId}},\n  \"type\": \"request\",\n  \"category\": \"mentorship\",\n  \"message\": \"Please review my product plan\"\n}" }, "url": "{{baseUrl}}/api/interactions" } },
+        { "name": "Respond To Interaction", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"status\": \"accepted\"\n}" }, "url": "{{baseUrl}}/api/interactions/{{interactionId}}/respond" } },
+        { "name": "My Interactions", "request": { "method": "GET", "url": "{{baseUrl}}/api/interactions" } },
+        { "name": "Active Mentorship Relationships", "request": { "method": "GET", "url": "{{baseUrl}}/api/interactions/relationships/mentorships" } },
+        { "name": "Active Investment Relationships", "request": { "method": "GET", "url": "{{baseUrl}}/api/interactions/relationships/investments" } },
+        { "name": "Single Interaction", "request": { "method": "GET", "url": "{{baseUrl}}/api/interactions/{{interactionId}}" } },
+        { "name": "Notifications", "request": { "method": "GET", "url": "{{baseUrl}}/api/notifications" } },
+        { "name": "Unread Notifications Count", "request": { "method": "GET", "url": "{{baseUrl}}/api/notifications/unread-count" } },
+        { "name": "Mark All Notifications Read", "request": { "method": "PUT", "url": "{{baseUrl}}/api/notifications/mark-all-read" } },
+        { "name": "Mark Notification Read", "request": { "method": "PUT", "url": "{{baseUrl}}/api/notifications/{{notificationId}}/read" } },
+        { "name": "Video Session Create", "request": { "method": "POST", "url": "{{baseUrl}}/api/video-sessions" } },
+        { "name": "Video Session List", "request": { "method": "GET", "url": "{{baseUrl}}/api/video-sessions" } },
+        { "name": "Video Session Get", "request": { "method": "GET", "url": "{{baseUrl}}/api/video-sessions/{{sessionId}}" } },
+        { "name": "Join Video Session", "request": { "method": "POST", "url": "{{baseUrl}}/api/video-sessions/{{sessionId}}/join" } },
+        { "name": "Reschedule Video Session", "request": { "method": "PUT", "url": "{{baseUrl}}/api/video-sessions/{{sessionId}}/reschedule" } },
+        { "name": "Cancel Video Session", "request": { "method": "POST", "url": "{{baseUrl}}/api/video-sessions/{{sessionId}}/cancel" } }
+      ]
+    },
+    {
+      "name": "09 Experience and Security",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{startupToken}}", "type": "string" }]
+      },
+      "item": [
+        { "name": "Startup Dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/api/dashboard/startup" } },
+        { "name": "Mentor Dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/api/dashboard/mentor" } },
+        { "name": "Investor Dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/api/dashboard/investor" } },
+        { "name": "Activity Feed", "request": { "method": "GET", "url": "{{baseUrl}}/api/activity/feed" } },
+        { "name": "Activity Summary", "request": { "method": "GET", "url": "{{baseUrl}}/api/activity/summary" } },
+        { "name": "Get Settings", "request": { "method": "GET", "url": "{{baseUrl}}/api/settings" } },
+        { "name": "Update Settings", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"timezone\": \"Africa/Addis_Ababa\",\n  \"language\": \"en\",\n  \"theme\": \"light\"\n}" }, "url": "{{baseUrl}}/api/settings" } },
+        { "name": "Get Privacy", "request": { "method": "GET", "url": "{{baseUrl}}/api/settings/privacy" } },
+        { "name": "Update Privacy", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"profile_visibility\": \"public\"\n}" }, "url": "{{baseUrl}}/api/settings/privacy" } },
+        { "name": "Notification Preferences", "request": { "method": "GET", "url": "{{baseUrl}}/api/settings/notifications/preferences" } },
+        { "name": "Update Notification Preferences", "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"channels\": { \"email\": true, \"push\": true },\n  \"preferences\": { \"digest\": \"daily\" }\n}" }, "url": "{{baseUrl}}/api/settings/notifications/preferences" } },
+        { "name": "List Devices", "request": { "method": "GET", "url": "{{baseUrl}}/api/security/devices" } },
+        { "name": "Trust Device", "request": { "method": "POST", "url": "{{baseUrl}}/api/security/devices/{{deviceId}}/trust" } },
+        { "name": "Remove Device", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/security/devices/{{deviceId}}" } },
+        { "name": "2FA Setup", "request": { "method": "POST", "url": "{{baseUrl}}/api/security/2fa/setup" } },
+        { "name": "2FA Verify", "request": { "method": "POST", "url": "{{baseUrl}}/api/security/2fa/verify" } },
+        { "name": "2FA Disable", "request": { "method": "POST", "url": "{{baseUrl}}/api/security/2fa/disable" } },
+        { "name": "2FA QR", "request": { "method": "GET", "url": "{{baseUrl}}/api/security/2fa/setup/qr" } },
+        { "name": "Redeem Backup Code", "request": { "method": "POST", "url": "{{baseUrl}}/api/security/2fa/redeem-backup" } },
+        { "name": "List Sessions", "request": { "method": "GET", "url": "{{baseUrl}}/api/security/sessions" } },
+        { "name": "Revoke Session", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/security/sessions/{{sessionId}}" } },
+        { "name": "Logout All Sessions", "request": { "method": "POST", "url": "{{baseUrl}}/api/security/sessions/logout-all" } },
+        { "name": "Block User", "request": { "method": "POST", "url": "{{baseUrl}}/api/block/{{otherUserId}}" } },
+        { "name": "Unblock User", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/block/{{otherUserId}}" } },
+        { "name": "List Blocked Users", "request": { "method": "GET", "url": "{{baseUrl}}/api/block" } },
+        { "name": "Create Report", "request": { "method": "POST", "url": "{{baseUrl}}/api/reports" } },
+        { "name": "My Reports", "request": { "method": "GET", "url": "{{baseUrl}}/api/reports/my" } },
+        { "name": "Entity Ratings", "request": { "method": "GET", "url": "{{baseUrl}}/api/ratings/startup/{{startupId}}" } },
+        { "name": "Create Rating", "request": { "method": "POST", "url": "{{baseUrl}}/api/ratings" } },
+        { "name": "Report Rating", "request": { "method": "POST", "url": "{{baseUrl}}/api/ratings/{{ratingId}}/report" } },
+        { "name": "Analytics Mentor", "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/mentor" } },
+        { "name": "Analytics Startup", "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/startup" } },
+        { "name": "Analytics Platform", "request": { "method": "GET", "url": "{{baseUrl}}/api/analytics/platform" } },
+        { "name": "Recommend Mentors", "request": { "method": "GET", "url": "{{baseUrl}}/api/recommendations/mentors" } },
+        { "name": "Recalculate Intelligence For User", "request": { "method": "POST", "url": "{{baseUrl}}/api/intelligence/user/{{userId}}/recalculate" } }
+      ]
+    },
+    {
+      "name": "10 Transactions",
+      "item": [
+        {
+          "name": "Startup Transactions",
+          "auth": {
+            "type": "bearer",
+            "bearer": [{ "key": "token", "value": "{{startupToken}}", "type": "string" }]
+          },
+          "item": [
+            { "name": "Initiate Payment", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"relationship_id\": {{mentorshipId}},\n  \"payment_type\": \"mentorship_session\",\n  \"amount\": 100,\n  \"currency\": \"ETB\",\n  \"session_id\": {{sessionId}},\n  \"description\": \"Mentorship payment\"\n}" }, "url": "{{baseUrl}}/api/transactions/payments/initiate" } },
+            { "name": "Verify Payment", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"tx_ref\": \"{{txRef}}\"\n}" }, "url": "{{baseUrl}}/api/transactions/payments/verify" } },
+            { "name": "Transaction History", "request": { "method": "GET", "url": "{{baseUrl}}/api/transactions/history" } },
+            { "name": "Transaction Details", "request": { "method": "GET", "url": "{{baseUrl}}/api/transactions/payments/{{paymentId}}" } },
+            { "name": "Request Refund", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Test refund request\"\n}" }, "url": "{{baseUrl}}/api/transactions/payments/{{paymentId}}/refund" } }
+          ]
+        },
+        {
+          "name": "Admin and Investor Transaction Views",
+          "auth": {
+            "type": "bearer",
+            "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+          },
+          "item": [
+            { "name": "Refund Decision", "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"approve\": true,\n  \"notes\": \"Approved from demo flow\"\n}" }, "url": "{{baseUrl}}/api/transactions/refunds/{{refundId}}/decision" } },
+            { "name": "Mentor Earnings", "request": { "method": "GET", "url": "{{baseUrl}}/api/transactions/mentor/earnings" } },
+            { "name": "Investor Analytics Transaction View", "request": { "method": "GET", "url": "{{baseUrl}}/api/transactions/investor/analytics" } },
+            { "name": "Platform Revenue", "request": { "method": "GET", "url": "{{baseUrl}}/api/transactions/platform/revenue" } },
+            { "name": "Chapa Webhook", "request": { "method": "POST", "url": "{{baseUrl}}/api/transactions/webhooks/chapa" } }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "11 Admin",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+      },
+      "item": [
+        { "name": "Dashboard Summary", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/dashboard/summary" } },
+        { "name": "Pending Users", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/users/pending" } },
+        { "name": "Approve User", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/users/approve/{{userId}}" } },
+        { "name": "Reject User", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/users/reject/{{userId}}" } },
+        { "name": "List Users", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/users" } },
+        { "name": "Get User", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/users/{{userId}}" } },
+        { "name": "Update User Status", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/users/{{userId}}/status" } },
+        { "name": "Create Admin", "request": { "method": "POST", "url": "{{baseUrl}}/api/admin/create-admin" } },
+        { "name": "List Startups", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/startups" } },
+        { "name": "Approve Startup", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/startups/{{startupId}}/approve" } },
+        { "name": "Unapprove Startup", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/startups/{{startupId}}/unapprove" } },
+        { "name": "List Mentors", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/mentors" } },
+        { "name": "Approve Mentor", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/mentors/{{mentorId}}/approve" } },
+        { "name": "Unapprove Mentor", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/mentors/{{mentorId}}/unapprove" } },
+        { "name": "List Investors", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/investors" } },
+        { "name": "Approve Investor", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/investors/{{investorId}}/approve" } },
+        { "name": "Unapprove Investor", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/investors/{{investorId}}/unapprove" } },
+        { "name": "List Documents", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/documents" } },
+        { "name": "List Audit Logs", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/audit-logs" } },
+        { "name": "Maintenance Status", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/maintenance/status" } },
+        { "name": "Admin Security Analytics", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/security/analytics" } },
+        { "name": "Maintenance Clear Audit Logs", "request": { "method": "POST", "url": "{{baseUrl}}/api/admin/maintenance/clear-audit-logs" } }
+      ]
+    }
+  ]
+}

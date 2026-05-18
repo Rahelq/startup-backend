@@ -5,7 +5,7 @@ async function block(req, res, next) {
   try {
     const blockerId = req.user.user_id;
     const blockedId = Number(req.params.userId);
-    const { reason } = req.body;
+    const { reason } = req.body || {};
     const r = await blockService.blockUser(blockerId, blockedId, reason);
     await securityLogService.recordEvent(blockerId, "user_blocked", "low", req.ip, {
       blockedId,

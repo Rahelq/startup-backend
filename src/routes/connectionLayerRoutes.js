@@ -2,6 +2,7 @@ const router = require("express").Router();
 const validate = require("../middleware/validate");
 const { authenticate, requireApproval } = require("../middleware/authMiddleware");
 const controller = require("../controllers/connectionLayerController");
+const upload = require("../middleware/multerMemory");
 const {
   mentorshipProposalSchema,
   proposalStatusSchema,
@@ -52,6 +53,7 @@ router.post(
   "/mentorship-proposals",
   authenticate,
   requireApproval,
+  upload.array("attachments"),
   validate(mentorshipProposalSchema),
   controller.createMentorshipProposal
 );
@@ -73,6 +75,7 @@ router.post(
   "/investment-offers",
   authenticate,
   requireApproval,
+  upload.array("attachments"),
   validate(investmentOfferSchema),
   controller.createInvestmentOffer
 );

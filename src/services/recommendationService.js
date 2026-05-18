@@ -1,6 +1,9 @@
 const pool = require("../config/db");
 const recommendationHelper = require("../utils/recommendationHelper");
-const scoringService = require("./scoringService");
+const startupModel = require("../models/startupModel");
+const mentorModel = require("../models/mentorModel");
+const investorModel = require("../models/investorModel");
+const discoveryService = require("./discoveryService");
 
 async function recommendMentorsForStartup(userId, { industry = null, limit = 10 } = {}) {
   // Find mentors matching industry or who interacted frequently; simple heuristic
@@ -11,7 +14,15 @@ async function recommendMentorsForStartup(userId, { industry = null, limit = 10 
      LEFT JOIN (
        SELECT reviewed_user_id, AVG(rating) AS avg_rating FROM ratings WHERE status='active' GROUP BY reviewed_user_id
      ) ar ON ar.reviewed_user_id = u.user_id
-     WHERE ($1::text IS NULL OR m.industries && ARRAY[$1::text])
+     WHERE (
+       $1::text IS NULL
+       OR EXISTS (
+         SELECT 1
+         FROM jsonb_array_elements_text(COALESCE(m.industries, '[]'::jsonb)) AS ind(value)
+         WHERE LOWER(ind.value) = LOWER($1::text)
+       )
+       OR COALESCE(m.expertise, '') ILIKE ('%' || $1::text || '%')
+     )
      LIMIT $2`,
     [industry, limit]
   );
@@ -47,12 +58,6 @@ async function recommendMentorsForStartup(userId, { industry = null, limit = 10 
 
   return results.map((r) => ({ ...r.candidate, score: r.score }));
 }
-
-module.exports = { recommendMentorsForStartup };
-const startupModel = require("../models/startupModel");
-const mentorModel = require("../models/mentorModel");
-const investorModel = require("../models/investorModel");
-const discoveryService = require("./discoveryService");
 
 async function getStartupRecommendations(userId, query = {}) {
   const startup = await startupModel.findByUserId(userId);
@@ -154,6 +159,7 @@ async function getInvestorRecommendations(userId, query = {}) {
 }
 
 module.exports = {
+  recommendMentorsForStartup,
   getStartupRecommendations,
   getMentorRecommendations,
   getInvestorRecommendations,

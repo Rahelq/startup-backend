@@ -37,7 +37,10 @@ async function hasCompletedMentorshipSession(sessionId, userId) {
     `SELECT 1 FROM mentorship_sessions
      WHERE mentorship_session_id = $1
        AND status = 'completed'
-       AND (host_id = $2 OR participant_id = $2)`,
+       AND (
+         mentor_id IN (SELECT mentor_id FROM mentors WHERE user_id = $2)
+         OR startup_id IN (SELECT startup_id FROM startups WHERE user_id = $2)
+       )`,
     [sessionId, userId]
   );
   return result.rows.length > 0;
@@ -93,8 +96,8 @@ async function canUserRate({
   if (["mentor", "startup", "investor", "project", "milestone"].includes(normalizedEntityType)) {
     const participation = await pool.query(
       `SELECT 1
-       FROM interactions
-       WHERE (user_id = $1 OR receiver_id = $1)
+       FROM interaction_requests
+       WHERE (sender_id = $1 OR receiver_id = $1)
          AND category IN ('investment', 'mentorship')
        LIMIT 1`,
       [reviewerId]

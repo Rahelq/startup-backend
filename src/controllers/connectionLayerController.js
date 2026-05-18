@@ -98,10 +98,9 @@ exports.updateInvestmentRelationshipStatus = async (req, res) => {
 
 exports.createMentorshipProposal = async (req, res) => {
   try {
-    const proposal = await service.createMentorshipProposal({
-      userId: req.user.user_id,
-      body: req.validatedBody || req.body,
-    });
+    const b = req.validatedBody || req.body || {};
+    b.files = req.files || [];
+    const proposal = await service.createMentorshipProposal({ userId: req.user.user_id, body: b });
     return res.status(201).json({ message: "Mentorship proposal created", proposal });
   } catch (err) {
     return res.status(err.status || 500).json({ error: err.message });
@@ -135,10 +134,9 @@ exports.updateMentorshipProposalStatus = async (req, res) => {
 
 exports.createInvestmentOffer = async (req, res) => {
   try {
-    const offer = await service.createInvestmentOffer({
-      userId: req.user.user_id,
-      body: req.validatedBody || req.body,
-    });
+    const bo = req.validatedBody || req.body || {};
+    bo.files = req.files || [];
+    const offer = await service.createInvestmentOffer({ userId: req.user.user_id, body: bo });
     return res.status(201).json({ message: "Investment offer created", offer });
   } catch (err) {
     return res.status(err.status || 500).json({ error: err.message });

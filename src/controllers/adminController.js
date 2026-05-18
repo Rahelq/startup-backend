@@ -101,7 +101,7 @@ exports.getPendingUser = async (req, res) => {
 exports.rejectUser = async (req, res) => {
   const { userId } = req.params;
   const admin = req.user;
-  const { reason } = req.body;
+  const { reason } = req.body || {};
   try {
     const result = await pool.query(
       `UPDATE users
@@ -283,7 +283,7 @@ exports.listAuditLogs = async (req, res) => {
 exports.approveUser = async (req, res) => {
   const { userId } = req.params;
   const admin = req.user;
-  const { comment } = req.body;
+  const { comment } = req.body || {};
   try {
     const result = await pool.query(
       `UPDATE users

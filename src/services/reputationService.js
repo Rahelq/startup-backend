@@ -5,8 +5,10 @@ const reputationModel = require("../models/reputationScoreModel");
 async function getSessionTotals(userId) {
   const mentorship = await pool.query(
     `SELECT COUNT(*)::int AS total
-     FROM mentorship_sessions
-     WHERE (host_id = $1 OR participant_id = $1) AND status = 'completed'`,
+     FROM mentorship_sessions ms
+     LEFT JOIN mentors m ON m.mentor_id = ms.mentor_id
+     LEFT JOIN startups s ON s.startup_id = ms.startup_id
+     WHERE (m.user_id = $1 OR s.user_id = $1) AND ms.status = 'completed'`,
     [userId]
   );
   const meetings = await pool.query(

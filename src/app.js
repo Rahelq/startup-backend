@@ -1,18 +1,28 @@
 const express = require("express");
+const fs = require("fs");
+const path = require("path");
 const pool = require("./config/db");
 let helmet;
 let cors;
+let swaggerUi;
+let yaml;
 const redisRateLimiter = require("./middleware/redisRateLimiter");
-const logger = require("./utils/logger");
 try {
   helmet = require("helmet");
-} catch (e) {
+} catch {
   helmet = null;
 }
 try {
   cors = require("cors");
-} catch (e) {
+} catch {
   cors = null;
+}
+try {
+  swaggerUi = require("swagger-ui-express");
+  yaml = require("js-yaml");
+} catch {
+  swaggerUi = null;
+  yaml = null;
 }
 
 // Import all routes
@@ -53,6 +63,14 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 const recommendationRoutes = require("./routes/recommendationRoutes");
 const intelligenceRoutes = require("./routes/intelligenceRoutes");
 
+let openApiSpec = null;
+if (swaggerUi && yaml) {
+  const openApiPath = path.join(__dirname, "..", "support", "docs", "openapi.yml");
+  if (fs.existsSync(openApiPath)) {
+    openApiSpec = yaml.load(fs.readFileSync(openApiPath, "utf8"));
+  }
+}
+
 const app = express();
 
 // Middleware
@@ -91,6 +109,13 @@ app.get("/", async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+
+if (swaggerUi && openApiSpec) {
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiSpec, { explorer: true }));
+  app.get("/api/docs.json", (req, res) => {
+    res.json(openApiSpec);
+  });
+}
 
 // Mount all routes
 app.use("/api/test", testRoutes);
