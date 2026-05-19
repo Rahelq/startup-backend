@@ -64,14 +64,18 @@ async function loginUser({ email, password, ip = null, device = {} }) {
   if (!user) throw { status: 404, message: "User not found" };
 
   const isMatch = await bcrypt.compare(password, user.password_hash);
-  await suspiciousService.recordLoginAttempt({
-    userId: user.user_id,
-    email,
-    ip,
-    deviceInfo: device,
-    success: !!isMatch,
-    failureReason: isMatch ? null : "invalid_password",
-  });
+  try {
+    await suspiciousService.recordLoginAttempt({
+      userId: user.user_id,
+      email,
+      ip,
+      deviceInfo: device,
+      success: !!isMatch,
+      failureReason: isMatch ? null : "invalid_password",
+    });
+  } catch {
+    // Login should continue even if audit tables are not fully migrated yet.
+  }
   if (!isMatch) throw { status: 401, message: "Invalid password" };
   if (accountBlocked(user)) {
     try {

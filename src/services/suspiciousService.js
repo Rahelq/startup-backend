@@ -6,18 +6,28 @@ const mail = require("../utils/mail");
 async function recordLoginAttempt({ userId, email, ip, deviceInfo, success, failureReason }) {
   const client = await pool.connect();
   try {
-    await client.query(
-      `INSERT INTO login_attempts (user_id, email, ip_address, device_info, success, failure_reason, created_at)
-       VALUES ($1,$2,$3,$4,$5,$6,NOW())`,
-      [
-        userId || null,
-        email || null,
-        ip || null,
-        deviceInfo || null,
-        !!success,
-        failureReason || null,
-      ]
-    );
+    const values = [
+      userId || null,
+      email || null,
+      ip || null,
+      deviceInfo || null,
+      !!success,
+      failureReason || null,
+    ];
+
+    try {
+      await client.query(
+        `INSERT INTO login_attempts (user_id, email, ip_address, device_info, success, failure_reason, created_at)
+         VALUES ($1,$2,$3,$4,$5,$6,NOW())`,
+        values
+      );
+    } catch {
+      await client.query(
+        `INSERT INTO login_attempts (user_id, email, ip_address, device_info, was_successful, failure_reason, created_at)
+         VALUES ($1,$2,$3,$4,$5,$6,NOW())`,
+        values
+      );
+    }
   } finally {
     client.release();
   }
@@ -45,7 +55,8 @@ async function assessSuspicion({ userId, ip, deviceId }) {
         if (userRes.rows.length && userRes.rows[0].email) {
           const to = userRes.rows[0].email;
           const subject = "New device login detected";
-          const text = "A login from a new device was detected for your StartupConnect account. If this wasn't you, please secure your account.";
+          const text =
+            "A login from a new device was detected for your StartupConnect account. If this wasn't you, please secure your account.";
           mail.sendMail(to, subject, text, `<p>${text}</p>`).catch(() => {});
         }
       } catch (e) {}

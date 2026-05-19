@@ -1,0 +1,2273 @@
+openapi: 3.0.0
+info:
+  title: Startup Connect API (skeleton)
+  version: 1.0.0
+paths:
+  /api/auth/register:
+    post:
+      summary: "AUTO: POST /api/auth/register"
+      tags:
+        - auth
+      responses:
+        "200":
+          description: OK
+  /api/auth/login:
+    post:
+      summary: "AUTO: POST /api/auth/login"
+      tags:
+        - auth
+      responses:
+        "200":
+          description: OK
+  /api/auth/refresh:
+    post:
+      summary: "AUTO: POST /api/auth/refresh"
+      tags:
+        - auth
+      responses:
+        "200":
+          description: OK
+  /api/auth/logout:
+    post:
+      summary: "AUTO: POST /api/auth/logout"
+      tags:
+        - auth
+      responses:
+        "200":
+          description: OK
+  /api/auth/forgot-password:
+    post:
+      summary: "AUTO: POST /api/auth/forgot-password"
+      tags:
+        - auth
+      responses:
+        "200":
+          description: OK
+  /api/auth/reset-password:
+    post:
+      summary: "AUTO: POST /api/auth/reset-password"
+      tags:
+        - auth
+      responses:
+        "200":
+          description: OK
+  /api/users/profile:
+    get:
+      summary: "AUTO: GET /api/users/profile"
+      tags:
+        - users
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/users/profile"
+      tags:
+        - users
+      responses:
+        "200":
+          description: OK
+  /api/users/verification/submit:
+    post:
+      summary: "AUTO: POST /api/users/verification/submit"
+      tags:
+        - users
+      responses:
+        "200":
+          description: OK
+  /api/test/dashboard:
+    get:
+      summary: "AUTO: GET /api/test/dashboard"
+      tags:
+        - test
+      responses:
+        "200":
+          description: OK
+  /api/test/startup-only:
+    get:
+      summary: "AUTO: GET /api/test/startup-only"
+      tags:
+        - test
+      responses:
+        "200":
+          description: OK
+  /api/startups/profile:
+    post:
+      summary: "AUTO: POST /api/startups/profile"
+      tags:
+        - startups
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/startups/profile"
+      tags:
+        - startups
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/startups/profile"
+      tags:
+        - startups
+      responses:
+        "200":
+          description: OK
+  /api/startups/discover:
+    get:
+      summary: "AUTO: GET /api/startups/discover"
+      tags:
+        - startups
+      responses:
+        "200":
+          description: OK
+  /api/startups/recommendations:
+    get:
+      summary: "AUTO: GET /api/startups/recommendations"
+      tags:
+        - startups
+      responses:
+        "200":
+          description: OK
+  /api/startups/dashboard:
+    get:
+      summary: "AUTO: GET /api/startups/dashboard"
+      tags:
+        - startups
+      responses:
+        "200":
+          description: OK
+  /api/projects/create:
+    post:
+      summary: "AUTO: POST /api/projects/create"
+      tags:
+        - projects
+      responses:
+        "200":
+          description: OK
+  /api/projects/mine:
+    get:
+      summary: "AUTO: GET /api/projects/mine"
+      tags:
+        - projects
+      responses:
+        "200":
+          description: OK
+  /api/projects/all:
+    get:
+      summary: "AUTO: GET /api/projects/all"
+      tags:
+        - projects
+      responses:
+        "200":
+          description: OK
+  /api/projects/{projectId}/documents:
+    post:
+      summary: "AUTO: POST /api/projects/{projectId}/documents"
+      tags:
+        - projects
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/projects/{projectId}/documents"
+      tags:
+        - projects
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/projects/{projectId}/milestones:
+    post:
+      summary: "AUTO: POST /api/projects/{projectId}/milestones"
+      tags:
+        - projects
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/projects/{projectId}/milestones"
+      tags:
+        - projects
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/projects/milestones/{milestoneId}:
+    put:
+      summary: "AUTO: PUT /api/projects/milestones/{milestoneId}"
+      tags:
+        - projects
+      parameters:
+        - name: milestoneId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/projects/{projectId}:
+    get:
+      summary: "AUTO: GET /api/projects/{projectId}"
+      tags:
+        - projects
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/projects/{projectId}"
+      tags:
+        - projects
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investments/request:
+    post:
+      summary: "AUTO: POST /api/investments/request"
+      tags:
+        - investments
+      responses:
+        "200":
+          description: OK
+  /api/investments/requests:
+    get:
+      summary: "AUTO: GET /api/investments/requests"
+      tags:
+        - investments
+      responses:
+        "200":
+          description: OK
+  /api/investments/requests/{requestId}/respond:
+    put:
+      summary: "AUTO: PUT /api/investments/requests/{requestId}/respond"
+      tags:
+        - investments
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investments/requests/{requestId}/payments:
+    post:
+      summary: "AUTO: POST /api/investments/requests/{requestId}/payments"
+      tags:
+        - investments
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investments/payments:
+    get:
+      summary: "AUTO: GET /api/investments/payments"
+      tags:
+        - investments
+      responses:
+        "200":
+          description: OK
+  /api/investments/requests/{requestId}/feedback:
+    post:
+      summary: "AUTO: POST /api/investments/requests/{requestId}/feedback"
+      tags:
+        - investments
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investments/feedback:
+    get:
+      summary: "AUTO: GET /api/investments/feedback"
+      tags:
+        - investments
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/requests:
+    post:
+      summary: "AUTO: POST /api/mentorship/requests"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/requests/outgoing:
+    get:
+      summary: "AUTO: GET /api/mentorship/requests/outgoing"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/availability/me:
+    get:
+      summary: "AUTO: GET /api/mentorship/availability/me"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/mentorship/availability/me"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/availability/{mentorId}:
+    get:
+      summary: "AUTO: GET /api/mentorship/availability/{mentorId}"
+      tags:
+        - mentorship
+      parameters:
+        - name: mentorId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/requests/incoming:
+    get:
+      summary: "AUTO: GET /api/mentorship/requests/incoming"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/requests/{requestId}/respond:
+    put:
+      summary: "AUTO: PUT /api/mentorship/requests/{requestId}/respond"
+      tags:
+        - mentorship
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/sessions:
+    post:
+      summary: "AUTO: POST /api/mentorship/sessions"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/mentorship/sessions"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/bookings:
+    post:
+      summary: "AUTO: POST /api/mentorship/bookings"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/sessions/{sessionId}:
+    get:
+      summary: "AUTO: GET /api/mentorship/sessions/{sessionId}"
+      tags:
+        - mentorship
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/mentorship/sessions/{sessionId}"
+      tags:
+        - mentorship
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/reports:
+    post:
+      summary: "AUTO: POST /api/mentorship/reports"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/mentorship/reports"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/resources:
+    post:
+      summary: "AUTO: POST /api/mentorship/resources"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/mentorship/resources"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/payments:
+    post:
+      summary: "AUTO: POST /api/mentorship/payments"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/mentorship/payments"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/chat/messages:
+    post:
+      summary: "AUTO: POST /api/mentorship/chat/messages"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/progress:
+    post:
+      summary: "AUTO: POST /api/mentorship/progress"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/mentorship/progress"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/chat/conversation/{otherUserId}:
+    get:
+      summary: "AUTO: GET /api/mentorship/chat/conversation/{otherUserId}"
+      tags:
+        - mentorship
+      parameters:
+        - name: otherUserId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/sessions/{sessionId}/confirm:
+    post:
+      summary: "AUTO: POST /api/mentorship/sessions/{sessionId}/confirm"
+      tags:
+        - mentorship
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/sessions/{sessionId}/reschedule:
+    put:
+      summary: "AUTO: PUT /api/mentorship/sessions/{sessionId}/reschedule"
+      tags:
+        - mentorship
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/sessions/{sessionId}/cancel:
+    post:
+      summary: "AUTO: POST /api/mentorship/sessions/{sessionId}/cancel"
+      tags:
+        - mentorship
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentorship/history:
+    get:
+      summary: "AUTO: GET /api/mentorship/history"
+      tags:
+        - mentorship
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/offers:
+    post:
+      summary: "AUTO: POST /api/investment-workflow/offers"
+      tags:
+        - investment-workflow
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/offers/{investmentId}:
+    get:
+      summary: "AUTO: GET /api/investment-workflow/offers/{investmentId}"
+      tags:
+        - investment-workflow
+      parameters:
+        - name: investmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/investments/{investmentId}/counter-offer:
+    post:
+      summary: "AUTO: POST /api/investment-workflow/investments/{investmentId}/counter-offer"
+      tags:
+        - investment-workflow
+      parameters:
+        - name: investmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/investments/{investmentId}/respond:
+    put:
+      summary: "AUTO: PUT /api/investment-workflow/investments/{investmentId}/respond"
+      tags:
+        - investment-workflow
+      parameters:
+        - name: investmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/investments/{investmentId}/negotiation:
+    get:
+      summary: "AUTO: GET /api/investment-workflow/investments/{investmentId}/negotiation"
+      tags:
+        - investment-workflow
+      parameters:
+        - name: investmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/portfolio:
+    get:
+      summary: "AUTO: GET /api/investment-workflow/portfolio"
+      tags:
+        - investment-workflow
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/received:
+    get:
+      summary: "AUTO: GET /api/investment-workflow/received"
+      tags:
+        - investment-workflow
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/investments/{investmentId}/payment:
+    post:
+      summary: "AUTO: POST /api/investment-workflow/investments/{investmentId}/payment"
+      tags:
+        - investment-workflow
+      parameters:
+        - name: investmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/investments/{investmentId}/tracking:
+    post:
+      summary: "AUTO: POST /api/investment-workflow/investments/{investmentId}/tracking"
+      tags:
+        - investment-workflow
+      parameters:
+        - name: investmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/investment-workflow/investments/{investmentId}/tracking"
+      tags:
+        - investment-workflow
+      parameters:
+        - name: investmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/investments/{investmentId}/documents:
+    post:
+      summary: "AUTO: POST /api/investment-workflow/investments/{investmentId}/documents"
+      tags:
+        - investment-workflow
+      parameters:
+        - name: investmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/investments/{investmentId}/feedback:
+    post:
+      summary: "AUTO: POST /api/investment-workflow/investments/{investmentId}/feedback"
+      tags:
+        - investment-workflow
+      parameters:
+        - name: investmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/feedback:
+    get:
+      summary: "AUTO: GET /api/investment-workflow/feedback"
+      tags:
+        - investment-workflow
+      responses:
+        "200":
+          description: OK
+  /api/investment-workflow/admin/all:
+    get:
+      summary: "AUTO: GET /api/investment-workflow/admin/all"
+      tags:
+        - investment-workflow
+      responses:
+        "200":
+          description: OK
+  /api/mentorship-workflow/offers:
+    post:
+      summary: "AUTO: POST /api/mentorship-workflow/offers"
+      tags:
+        - mentorship-workflow
+      responses:
+        "200":
+          description: OK
+  /api/mentorship-workflow/offers/{mentorshipId}:
+    get:
+      summary: "AUTO: GET /api/mentorship-workflow/offers/{mentorshipId}"
+      tags:
+        - mentorship-workflow
+      parameters:
+        - name: mentorshipId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentorship-workflow/mentors/{mentorshipId}/pricing:
+    post:
+      summary: "AUTO: POST /api/mentorship-workflow/mentors/{mentorshipId}/pricing"
+      tags:
+        - mentorship-workflow
+      parameters:
+        - name: mentorshipId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentorship-workflow/sessions/book:
+    post:
+      summary: "AUTO: POST /api/mentorship-workflow/sessions/book"
+      tags:
+        - mentorship-workflow
+      responses:
+        "200":
+          description: OK
+  /api/mentorship-workflow/sessions:
+    get:
+      summary: "AUTO: GET /api/mentorship-workflow/sessions"
+      tags:
+        - mentorship-workflow
+      responses:
+        "200":
+          description: OK
+  /api/mentorship-workflow/sessions/{sessionId}/notes:
+    post:
+      summary: "AUTO: POST /api/mentorship-workflow/sessions/{sessionId}/notes"
+      tags:
+        - mentorship-workflow
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentorship-workflow/resources:
+    post:
+      summary: "AUTO: POST /api/mentorship-workflow/resources"
+      tags:
+        - mentorship-workflow
+      responses:
+        "200":
+          description: OK
+  /api/mentorship-workflow/my-mentorships:
+    get:
+      summary: "AUTO: GET /api/mentorship-workflow/my-mentorships"
+      tags:
+        - mentorship-workflow
+      responses:
+        "200":
+          description: OK
+  /api/mentorship-workflow/received:
+    get:
+      summary: "AUTO: GET /api/mentorship-workflow/received"
+      tags:
+        - mentorship-workflow
+      responses:
+        "200":
+          description: OK
+  /api/mentorship-workflow/admin/all:
+    get:
+      summary: "AUTO: GET /api/mentorship-workflow/admin/all"
+      tags:
+        - mentorship-workflow
+      responses:
+        "200":
+          description: OK
+  /api/projects-workflow/projects:
+    post:
+      summary: "AUTO: POST /api/projects-workflow/projects"
+      tags:
+        - projects-workflow
+      responses:
+        "200":
+          description: OK
+  /api/projects-workflow/projects/{projectId}:
+    get:
+      summary: "AUTO: GET /api/projects-workflow/projects/{projectId}"
+      tags:
+        - projects-workflow
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/projects-workflow/projects/{projectId}/status:
+    put:
+      summary: "AUTO: PUT /api/projects-workflow/projects/{projectId}/status"
+      tags:
+        - projects-workflow
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/projects-workflow/projects/{projectId}/milestones:
+    post:
+      summary: "AUTO: POST /api/projects-workflow/projects/{projectId}/milestones"
+      tags:
+        - projects-workflow
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/projects-workflow/projects/{projectId}/milestones"
+      tags:
+        - projects-workflow
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/projects-workflow/milestones/{milestoneId}:
+    put:
+      summary: "AUTO: PUT /api/projects-workflow/milestones/{milestoneId}"
+      tags:
+        - projects-workflow
+      parameters:
+        - name: milestoneId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/projects-workflow/projects/{projectId}/documents:
+    post:
+      summary: "AUTO: POST /api/projects-workflow/projects/{projectId}/documents"
+      tags:
+        - projects-workflow
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/projects-workflow/projects/{projectId}/documents"
+      tags:
+        - projects-workflow
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/projects-workflow/my-projects:
+    get:
+      summary: "AUTO: GET /api/projects-workflow/my-projects"
+      tags:
+        - projects-workflow
+      responses:
+        "200":
+          description: OK
+  /api/projects-workflow/admin/all:
+    get:
+      summary: "AUTO: GET /api/projects-workflow/admin/all"
+      tags:
+        - projects-workflow
+      responses:
+        "200":
+          description: OK
+  /api/projects-workflow/projects/{projectId}/activity:
+    post:
+      summary: "AUTO: POST /api/projects-workflow/projects/{projectId}/activity"
+      tags:
+        - projects-workflow
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/projects-workflow/projects/{projectId}/activity"
+      tags:
+        - projects-workflow
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/resources/:
+    post:
+      summary: "AUTO: POST /api/resources/"
+      tags:
+        - resources
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/resources/"
+      tags:
+        - resources
+      responses:
+        "200":
+          description: OK
+  /api/resources/{resourceId}:
+    get:
+      summary: "AUTO: GET /api/resources/{resourceId}"
+      tags:
+        - resources
+      parameters:
+        - name: resourceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investors/profile:
+    get:
+      summary: "AUTO: GET /api/investors/profile"
+      tags:
+        - investors
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: "AUTO: POST /api/investors/profile"
+      tags:
+        - investors
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/investors/profile"
+      tags:
+        - investors
+      responses:
+        "200":
+          description: OK
+  /api/investors/documents/{documentId}:
+    delete:
+      summary: "AUTO: DELETE /api/investors/documents/{documentId}"
+      tags:
+        - investors
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/investors/documents/{documentId}"
+      tags:
+        - investors
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investors/:
+    get:
+      summary: "AUTO: GET /api/investors/"
+      tags:
+        - investors
+      responses:
+        "200":
+          description: OK
+  /api/investors/startups:
+    get:
+      summary: "AUTO: GET /api/investors/startups"
+      tags:
+        - investors
+      responses:
+        "200":
+          description: OK
+  /api/investors/startups/recommendations:
+    get:
+      summary: "AUTO: GET /api/investors/startups/recommendations"
+      tags:
+        - investors
+      responses:
+        "200":
+          description: OK
+  /api/investors/startups/{startupId}:
+    get:
+      summary: "AUTO: GET /api/investors/startups/{startupId}"
+      tags:
+        - investors
+      parameters:
+        - name: startupId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/investors/portfolio:
+    get:
+      summary: "AUTO: GET /api/investors/portfolio"
+      tags:
+        - investors
+      responses:
+        "200":
+          description: OK
+  /api/mentors/profile:
+    post:
+      summary: "AUTO: POST /api/mentors/profile"
+      tags:
+        - mentors
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/mentors/profile"
+      tags:
+        - mentors
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/mentors/profile"
+      tags:
+        - mentors
+      responses:
+        "200":
+          description: OK
+  /api/mentors/all:
+    get:
+      summary: "AUTO: GET /api/mentors/all"
+      tags:
+        - mentors
+      responses:
+        "200":
+          description: OK
+  /api/mentors/:
+    get:
+      summary: "AUTO: GET /api/mentors/"
+      tags:
+        - mentors
+      responses:
+        "200":
+          description: OK
+  /api/mentors/{mentorId}:
+    get:
+      summary: "AUTO: GET /api/mentors/{mentorId}"
+      tags:
+        - mentors
+      parameters:
+        - name: mentorId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentors/documents/{documentId}:
+    delete:
+      summary: "AUTO: DELETE /api/mentors/documents/{documentId}"
+      tags:
+        - mentors
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/mentors/documents/{documentId}/replace:
+    put:
+      summary: "AUTO: PUT /api/mentors/documents/{documentId}/replace"
+      tags:
+        - mentors
+      parameters:
+        - name: documentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/reports/:
+    post:
+      summary: "AUTO: POST /api/reports/"
+      tags:
+        - reports
+      responses:
+        "200":
+          description: OK
+  /api/reports/my:
+    get:
+      summary: "AUTO: GET /api/reports/my"
+      tags:
+        - reports
+      responses:
+        "200":
+          description: OK
+  /api/notifications/:
+    get:
+      summary: "AUTO: GET /api/notifications/"
+      tags:
+        - notifications
+      responses:
+        "200":
+          description: OK
+  /api/notifications/{id}/read:
+    put:
+      summary: "AUTO: PUT /api/notifications/{id}/read"
+      tags:
+        - notifications
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/notifications/unread-count:
+    get:
+      summary: "AUTO: GET /api/notifications/unread-count"
+      tags:
+        - notifications
+      responses:
+        "200":
+          description: OK
+  /api/notifications/mark-all-read:
+    put:
+      summary: "AUTO: PUT /api/notifications/mark-all-read"
+      tags:
+        - notifications
+      responses:
+        "200":
+          description: OK
+  /api/transactions/payments/initiate:
+    post:
+      summary: "AUTO: POST /api/transactions/payments/initiate"
+      tags:
+        - transactions
+      responses:
+        "200":
+          description: OK
+  /api/transactions/payments/verify:
+    post:
+      summary: "AUTO: POST /api/transactions/payments/verify"
+      tags:
+        - transactions
+      responses:
+        "200":
+          description: OK
+  /api/transactions/payments/{txRef}/verify:
+    get:
+      summary: "AUTO: GET /api/transactions/payments/{txRef}/verify"
+      tags:
+        - transactions
+      parameters:
+        - name: txRef
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/transactions/webhooks/chapa:
+    post:
+      summary: "AUTO: POST /api/transactions/webhooks/chapa"
+      tags:
+        - transactions
+      responses:
+        "200":
+          description: OK
+  /api/transactions/history:
+    get:
+      summary: "AUTO: GET /api/transactions/history"
+      tags:
+        - transactions
+      responses:
+        "200":
+          description: OK
+  /api/transactions/payments/{paymentId}:
+    get:
+      summary: "AUTO: GET /api/transactions/payments/{paymentId}"
+      tags:
+        - transactions
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/transactions/payments/{paymentId}/refund:
+    post:
+      summary: "AUTO: POST /api/transactions/payments/{paymentId}/refund"
+      tags:
+        - transactions
+      parameters:
+        - name: paymentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/transactions/refunds/{refundId}/decision:
+    post:
+      summary: "AUTO: POST /api/transactions/refunds/{refundId}/decision"
+      tags:
+        - transactions
+      parameters:
+        - name: refundId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/transactions/mentor/earnings:
+    get:
+      summary: "AUTO: GET /api/transactions/mentor/earnings"
+      tags:
+        - transactions
+      responses:
+        "200":
+          description: OK
+  /api/transactions/investor/analytics:
+    get:
+      summary: "AUTO: GET /api/transactions/investor/analytics"
+      tags:
+        - transactions
+      responses:
+        "200":
+          description: OK
+  /api/transactions/platform/revenue:
+    get:
+      summary: "AUTO: GET /api/transactions/platform/revenue"
+      tags:
+        - transactions
+      responses:
+        "200":
+          description: OK
+  /api/dashboard/startup:
+    get:
+      summary: "AUTO: GET /api/dashboard/startup"
+      tags:
+        - dashboard
+      responses:
+        "200":
+          description: OK
+  /api/dashboard/mentor:
+    get:
+      summary: "AUTO: GET /api/dashboard/mentor"
+      tags:
+        - dashboard
+      responses:
+        "200":
+          description: OK
+  /api/dashboard/investor:
+    get:
+      summary: "AUTO: GET /api/dashboard/investor"
+      tags:
+        - dashboard
+      responses:
+        "200":
+          description: OK
+  /api/dashboard/admin:
+    get:
+      summary: "AUTO: GET /api/dashboard/admin"
+      tags:
+        - dashboard
+      responses:
+        "200":
+          description: OK
+  /api/activity/feed:
+    get:
+      summary: "AUTO: GET /api/activity/feed"
+      tags:
+        - activity
+      responses:
+        "200":
+          description: OK
+  /api/activity/summary:
+    get:
+      summary: "AUTO: GET /api/activity/summary"
+      tags:
+        - activity
+      responses:
+        "200":
+          description: OK
+  /api/settings/:
+    get:
+      summary: "AUTO: GET /api/settings/"
+      tags:
+        - settings
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/settings/"
+      tags:
+        - settings
+      responses:
+        "200":
+          description: OK
+  /api/settings/privacy:
+    get:
+      summary: "AUTO: GET /api/settings/privacy"
+      tags:
+        - settings
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/settings/privacy"
+      tags:
+        - settings
+      responses:
+        "200":
+          description: OK
+  /api/settings/notifications/preferences:
+    get:
+      summary: "AUTO: GET /api/settings/notifications/preferences"
+      tags:
+        - settings
+      responses:
+        "200":
+          description: OK
+    put:
+      summary: "AUTO: PUT /api/settings/notifications/preferences"
+      tags:
+        - settings
+      responses:
+        "200":
+          description: OK
+  /api/security/devices/:
+    get:
+      summary: "AUTO: GET /api/security/devices/"
+      tags:
+        - security
+      responses:
+        "200":
+          description: OK
+  /api/security/devices/{id}:
+    delete:
+      summary: "AUTO: DELETE /api/security/devices/{id}"
+      tags:
+        - security
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/security/devices/{id}/trust:
+    post:
+      summary: "AUTO: POST /api/security/devices/{id}/trust"
+      tags:
+        - security
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/security/2fa/setup:
+    post:
+      summary: "AUTO: POST /api/security/2fa/setup"
+      tags:
+        - security
+      responses:
+        "200":
+          description: OK
+  /api/security/2fa/verify:
+    post:
+      summary: "AUTO: POST /api/security/2fa/verify"
+      tags:
+        - security
+      responses:
+        "200":
+          description: OK
+  /api/security/2fa/disable:
+    post:
+      summary: "AUTO: POST /api/security/2fa/disable"
+      tags:
+        - security
+      responses:
+        "200":
+          description: OK
+  /api/security/2fa/setup/qr:
+    get:
+      summary: "AUTO: GET /api/security/2fa/setup/qr"
+      tags:
+        - security
+      responses:
+        "200":
+          description: OK
+  /api/security/2fa/redeem-backup:
+    post:
+      summary: "AUTO: POST /api/security/2fa/redeem-backup"
+      tags:
+        - security
+      responses:
+        "200":
+          description: OK
+  /api/block/{userId}:
+    post:
+      summary: "AUTO: POST /api/block/{userId}"
+      tags:
+        - block
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: "AUTO: DELETE /api/block/{userId}"
+      tags:
+        - block
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/block/:
+    get:
+      summary: "AUTO: GET /api/block/"
+      tags:
+        - block
+      responses:
+        "200":
+          description: OK
+  /api/security/sessions/:
+    get:
+      summary: "AUTO: GET /api/security/sessions/"
+      tags:
+        - security
+      responses:
+        "200":
+          description: OK
+  /api/security/sessions/{id}:
+    delete:
+      summary: "AUTO: DELETE /api/security/sessions/{id}"
+      tags:
+        - security
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/security/sessions/logout-all:
+    post:
+      summary: "AUTO: POST /api/security/sessions/logout-all"
+      tags:
+        - security
+      responses:
+        "200":
+          description: OK
+  /api/admin/security/logs:
+    get:
+      summary: "AUTO: GET /api/admin/security/logs"
+      tags:
+        - admin
+      responses:
+        "200":
+          description: OK
+  /api/admin/security/suspicious:
+    get:
+      summary: "AUTO: GET /api/admin/security/suspicious"
+      tags:
+        - admin
+      responses:
+        "200":
+          description: OK
+  /api/admin/security/sessions:
+    get:
+      summary: "AUTO: GET /api/admin/security/sessions"
+      tags:
+        - admin
+      responses:
+        "200":
+          description: OK
+  /api/admin/security/sessions/{id}:
+    delete:
+      summary: "AUTO: DELETE /api/admin/security/sessions/{id}"
+      tags:
+        - admin
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/admin/security/analytics:
+    get:
+      summary: "AUTO: GET /api/admin/security/analytics"
+      tags:
+        - admin
+      responses:
+        "200":
+          description: OK
+  /api/conversations/:
+    post:
+      summary: "AUTO: POST /api/conversations/"
+      tags:
+        - conversations
+      responses:
+        "200":
+          description: OK
+  /api/conversations/{userId}:
+    get:
+      summary: "AUTO: GET /api/conversations/{userId}"
+      tags:
+        - conversations
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/conversations/{userId}/with/{otherUserId}:
+    get:
+      summary: "AUTO: GET /api/conversations/{userId}/with/{otherUserId}"
+      tags:
+        - conversations
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: otherUserId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/messages/:
+    post:
+      summary: "AUTO: POST /api/messages/"
+      tags:
+        - messages
+      responses:
+        "200":
+          description: OK
+  /api/messages/unread:
+    get:
+      summary: "AUTO: GET /api/messages/unread"
+      tags:
+        - messages
+      responses:
+        "200":
+          description: OK
+  /api/messages/{messageId}:
+    put:
+      summary: "AUTO: PUT /api/messages/{messageId}"
+      tags:
+        - messages
+      parameters:
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: "AUTO: DELETE /api/messages/{messageId}"
+      tags:
+        - messages
+      parameters:
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/messages/{conversationId}:
+    get:
+      summary: "AUTO: GET /api/messages/{conversationId}"
+      tags:
+        - messages
+      parameters:
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/messages/seen/{conversationId}:
+    put:
+      summary: "AUTO: PUT /api/messages/seen/{conversationId}"
+      tags:
+        - messages
+      parameters:
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/interactions/:
+    post:
+      summary: "AUTO: POST /api/interactions/"
+      tags:
+        - interactions
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/interactions/"
+      tags:
+        - interactions
+      responses:
+        "200":
+          description: OK
+  /api/interactions/{interactionId}/respond:
+    put:
+      summary: "AUTO: PUT /api/interactions/{interactionId}/respond"
+      tags:
+        - interactions
+      parameters:
+        - name: interactionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/interactions/{interactionId}:
+    delete:
+      summary: "AUTO: DELETE /api/interactions/{interactionId}"
+      tags:
+        - interactions
+      parameters:
+        - name: interactionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/interactions/{interactionId}"
+      tags:
+        - interactions
+      parameters:
+        - name: interactionId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/interactions/relationships/mentorships:
+    get:
+      summary: "AUTO: GET /api/interactions/relationships/mentorships"
+      tags:
+        - interactions
+      responses:
+        "200":
+          description: OK
+  /api/interactions/relationships/investments:
+    get:
+      summary: "AUTO: GET /api/interactions/relationships/investments"
+      tags:
+        - interactions
+      responses:
+        "200":
+          description: OK
+  /api/interactions/admin/all:
+    get:
+      summary: "AUTO: GET /api/interactions/admin/all"
+      tags:
+        - interactions
+      responses:
+        "200":
+          description: OK
+  /api/connection/discovery/mentors:
+    get:
+      summary: "AUTO: GET /api/connection/discovery/mentors"
+      tags:
+        - connection
+      responses:
+        "200":
+          description: OK
+  /api/connection/discovery/startups:
+    get:
+      summary: "AUTO: GET /api/connection/discovery/startups"
+      tags:
+        - connection
+      responses:
+        "200":
+          description: OK
+  /api/connection/discovery/investors:
+    get:
+      summary: "AUTO: GET /api/connection/discovery/investors"
+      tags:
+        - connection
+      responses:
+        "200":
+          description: OK
+  /api/connection/discovery/projects:
+    get:
+      summary: "AUTO: GET /api/connection/discovery/projects"
+      tags:
+        - connection
+      responses:
+        "200":
+          description: OK
+  /api/connection/relationships/mentorships:
+    get:
+      summary: "AUTO: GET /api/connection/relationships/mentorships"
+      tags:
+        - connection
+      responses:
+        "200":
+          description: OK
+  /api/connection/relationships/investments:
+    get:
+      summary: "AUTO: GET /api/connection/relationships/investments"
+      tags:
+        - connection
+      responses:
+        "200":
+          description: OK
+  /api/connection/relationships/mentorships/{mentorshipId}/status:
+    patch:
+      summary: "AUTO: PATCH /api/connection/relationships/mentorships/{mentorshipId}/status"
+      tags:
+        - connection
+      parameters:
+        - name: mentorshipId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/connection/relationships/investments/{investmentId}/status:
+    patch:
+      summary: "AUTO: PATCH /api/connection/relationships/investments/{investmentId}/status"
+      tags:
+        - connection
+      parameters:
+        - name: investmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/connection/mentorship-proposals:
+    post:
+      summary: "AUTO: POST /api/connection/mentorship-proposals"
+      tags:
+        - connection
+      responses:
+        "200":
+          description: OK
+  /api/connection/mentorship-proposals/{proposalId}:
+    get:
+      summary: "AUTO: GET /api/connection/mentorship-proposals/{proposalId}"
+      tags:
+        - connection
+      parameters:
+        - name: proposalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/connection/mentorship-proposals/{proposalId}/status:
+    patch:
+      summary: "AUTO: PATCH /api/connection/mentorship-proposals/{proposalId}/status"
+      tags:
+        - connection
+      parameters:
+        - name: proposalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/connection/investment-offers:
+    post:
+      summary: "AUTO: POST /api/connection/investment-offers"
+      tags:
+        - connection
+      responses:
+        "200":
+          description: OK
+  /api/connection/investment-offers/{offerId}:
+    get:
+      summary: "AUTO: GET /api/connection/investment-offers/{offerId}"
+      tags:
+        - connection
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/connection/investment-offers/{offerId}/status:
+    patch:
+      summary: "AUTO: PATCH /api/connection/investment-offers/{offerId}/status"
+      tags:
+        - connection
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/connection/funding-requests:
+    post:
+      summary: "AUTO: POST /api/connection/funding-requests"
+      tags:
+        - connection
+      responses:
+        "200":
+          description: OK
+  /api/connection/funding-requests/{requestId}:
+    get:
+      summary: "AUTO: GET /api/connection/funding-requests/{requestId}"
+      tags:
+        - connection
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/connection/funding-requests/{requestId}/status:
+    patch:
+      summary: "AUTO: PATCH /api/connection/funding-requests/{requestId}/status"
+      tags:
+        - connection
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/connection/negotiations:
+    post:
+      summary: "AUTO: POST /api/connection/negotiations"
+      tags:
+        - connection
+      responses:
+        "200":
+          description: OK
+  /api/connection/negotiations/{parentType}/{parentId}:
+    get:
+      summary: "AUTO: GET /api/connection/negotiations/{parentType}/{parentId}"
+      tags:
+        - connection
+      parameters:
+        - name: parentType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: parentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/video-sessions/webhooks/zoom:
+    post:
+      summary: "AUTO: POST /api/video-sessions/webhooks/zoom"
+      tags:
+        - video-sessions
+      responses:
+        "200":
+          description: OK
+  /api/video-sessions/:
+    post:
+      summary: "AUTO: POST /api/video-sessions/"
+      tags:
+        - video-sessions
+      responses:
+        "200":
+          description: OK
+    get:
+      summary: "AUTO: GET /api/video-sessions/"
+      tags:
+        - video-sessions
+      responses:
+        "200":
+          description: OK
+  /api/video-sessions/{id}:
+    get:
+      summary: "AUTO: GET /api/video-sessions/{id}"
+      tags:
+        - video-sessions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/video-sessions/{id}/join:
+    post:
+      summary: "AUTO: POST /api/video-sessions/{id}/join"
+      tags:
+        - video-sessions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/video-sessions/{id}/reschedule:
+    put:
+      summary: "AUTO: PUT /api/video-sessions/{id}/reschedule"
+      tags:
+        - video-sessions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/video-sessions/{id}/cancel:
+    post:
+      summary: "AUTO: POST /api/video-sessions/{id}/cancel"
+      tags:
+        - video-sessions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/ratings/{entityType}/{entityId}:
+    get:
+      summary: "AUTO: GET /api/ratings/{entityType}/{entityId}"
+      tags:
+        - ratings
+      parameters:
+        - name: entityType
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: entityId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/ratings/:
+    post:
+      summary: "AUTO: POST /api/ratings/"
+      tags:
+        - ratings
+      responses:
+        "200":
+          description: OK
+  /api/ratings/{id}/report:
+    post:
+      summary: "AUTO: POST /api/ratings/{id}/report"
+      tags:
+        - ratings
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/reputation/{userId}:
+    get:
+      summary: "AUTO: GET /api/reputation/{userId}"
+      tags:
+        - reputation
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/analytics/mentor:
+    get:
+      summary: "AUTO: GET /api/analytics/mentor"
+      tags:
+        - analytics
+      responses:
+        "200":
+          description: OK
+  /api/analytics/mentor/{userId}:
+    get:
+      summary: "AUTO: GET /api/analytics/mentor/{userId}"
+      tags:
+        - analytics
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/analytics/startup:
+    get:
+      summary: "AUTO: GET /api/analytics/startup"
+      tags:
+        - analytics
+      responses:
+        "200":
+          description: OK
+  /api/analytics/startup/{userId}:
+    get:
+      summary: "AUTO: GET /api/analytics/startup/{userId}"
+      tags:
+        - analytics
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/analytics/platform:
+    get:
+      summary: "AUTO: GET /api/analytics/platform"
+      tags:
+        - analytics
+      responses:
+        "200":
+          description: OK
+  /api/recommendations/mentors:
+    get:
+      summary: "AUTO: GET /api/recommendations/mentors"
+      tags:
+        - recommendations
+      responses:
+        "200":
+          description: OK
+  /api/recommendations/mentors/{userId}:
+    get:
+      summary: "AUTO: GET /api/recommendations/mentors/{userId}"
+      tags:
+        - recommendations
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/intelligence/user/{userId}/recalculate:
+    post:
+      summary: "AUTO: POST /api/intelligence/user/{userId}/recalculate"
+      tags:
+        - intelligence
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/intelligence/platform/snapshot:
+    post:
+      summary: "AUTO: POST /api/intelligence/platform/snapshot"
+      tags:
+        - intelligence
+      responses:
+        "200":
+          description: OK
