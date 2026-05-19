@@ -8,6 +8,7 @@ servers:
     description: Local development server
   - url: https://api.startupconnect.dev
     description: Production server
+
 paths:
   /:
     get:
@@ -25,6 +26,7 @@ paths:
                     type: string
                   time:
                     type: object
+
   /api/auth/register:
     post:
       summary: Register a new user
@@ -70,6 +72,7 @@ paths:
           description: Validation error
         '409':
           description: User already exists
+
   /api/auth/login:
     post:
       summary: Login user
@@ -107,6 +110,7 @@ paths:
           description: Invalid credentials
         '404':
           description: User not found
+
   /api/auth/refresh:
     post:
       summary: Refresh access token
@@ -133,6 +137,7 @@ paths:
                     type: string
         '401':
           description: Invalid or expired refresh token
+
   /api/users/profile:
     get:
       summary: Get user profile
@@ -170,52 +175,7 @@ paths:
           description: Unauthorized
         '403':
           description: Access denied
-components:
-  schemas:
-    User:
-      type: object
-      properties:
-        user_id:
-          type: integer
-        first_name:
-          type: string
-        last_name:
-          type: string
-        email:
-          type: string
-          format: email
-        role:
-          type: string
-          enum: [Admin, Startup, Investor, Mentor]
-        is_approved:
-          type: boolean
-        is_active:
-          type: boolean
-    Startup:
-      type: object
-      properties:
-        startup_id:
-          type: integer
-        user_id:
-          type: integer
-        startup_name:
-          type: string
-        industry:
-          type: string
-        description:
-          type: string
-        business_stage:
-          type: string
-        founded_year:
-          type: integer
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
 
-# Ratings & Feedback
-paths:
   /api/ratings:
     post:
       summary: Create a rating
@@ -313,7 +273,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReputationScore'
 
-# Admin moderation surface (restricted to Admin role)
   /api/admin/ratings:
     get:
       summary: List ratings for moderation (admin)
@@ -368,6 +327,44 @@ paths:
 
 components:
   schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [Admin, Startup, Investor, Mentor]
+        is_approved:
+          type: boolean
+        is_active:
+          type: boolean
+
+    Startup:
+      type: object
+      properties:
+        startup_id:
+          type: integer
+        user_id:
+          type: integer
+        startup_name:
+          type: string
+        industry:
+          type: string
+        description:
+          type: string
+        business_stage:
+          type: string
+        founded_year:
+          type: integer
+
     RatingInput:
       type: object
       properties:
@@ -426,3 +423,9 @@ components:
         calculated_at:
           type: string
           format: date-time
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
