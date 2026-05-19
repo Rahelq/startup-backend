@@ -56,6 +56,11 @@ async function migratePhase5Transactions() {
     `);
 
     await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_payments_transaction_reference
+      ON payments (transaction_reference);
+    `);
+
+    await client.query(`
       UPDATE payments
       SET receiver_amount = COALESCE(receiver_amount, amount - platform_fee)
       WHERE receiver_amount IS NULL;
