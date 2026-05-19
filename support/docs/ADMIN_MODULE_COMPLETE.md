@@ -38,45 +38,6 @@ backend/
 │   ├── adminRoutes.js              # Main aggregator (imports subroutes)
 │   └── admin/
 │       ├── adminUsersRoutes.js      # User mgmt endpoints
-│       ├── adminProfileRoutes.js    # Mentor/Investor/Startup approval
-│       ├── adminContentRoutes.js    # Document/Project/Resource deletion
-│       ├── adminInvestmentRoutes.js # Projects/Investments/Sessions/Payments
-│       ├── adminMentorshipRoutes.js # Mentorship dashboards
-│       ├── adminReportsRoutes.js    # Analytics & Exports
-│       └── adminMaintenanceRoutes.js # System ops
-│
-├── middleware/
-│   └── authMiddleware.js            # authenticate + authorizeRoles("Admin")
-│
-└── utils/
-    └── mail.js                      # User notifications
-```
-
----
-
-## 🔐 SECURITY
-
-**All admin endpoints require:**
-
-```javascript
-router.VERB(
-  "/endpoint",
-  authenticate,                      // Verify JWT
-  authorizeRoles("Admin"),           // Check role === "Admin"
-  adminController.handler
-);
-```
-
----
-
-## 📋 API ENDPOINTS
-
-### 1️⃣ USER MANAGEMENT (`/api/admin/users`)
-
-#### List Pending Users
-```
-GET /api/admin/users/pending
-Response: { pending: [{user_id, first_name, email, role, created_at, ...}] }
 ```
 
 #### View Pending User Details
@@ -641,3 +602,31 @@ The Admin Management Module is **complete, organized, and production-ready**. It
 6. ✅ Clean, maintainable code structure
 
 **Status**: READY FOR INTEGRATION & TESTING
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
