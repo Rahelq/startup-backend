@@ -8,6 +8,7 @@
     "dev": "nodemon src/server.js",
     "reset-db": "node support/scripts/reset_db.js",
     "seed-db": "node support/scripts/seed_db.js",
+    "bootstrap-db": "node support/scripts/bootstrap_full_db.js",
     "migrate-phase1-foundation": "node support/scripts/migrate_phase1_foundation.js",
     "migrate-chat": "node support/scripts/migrate_chat_schema.js",
     "migrate-video-sessions": "node support/scripts/migrate_video_sessions.js",
