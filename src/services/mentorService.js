@@ -4,8 +4,34 @@ const documentModel = require("../models/documentModel");
 const documentUploadService = require("./documentUploadService");
 const cloudinarySvc = require("./cloudinaryService");
 
-async function persistMentorFiles(userId, mentorId, files) {
+function cloudinaryResourceType(doc) {
+  const mime = doc.mime_type || "";
+  if (mime.startsWith("video/")) return "video";
+  if (mime.startsWith("image/")) return "image";
+  return "raw";
+}
+
+async function deleteExistingDocumentsOfType(userId, mentorId, documentType, keepIds = []) {
+  const keep = new Set(keepIds.filter(Boolean));
+  const existing = await documentModel.findByUserContextAndType(
+    userId,
+    "mentor_profile",
+    mentorId,
+    documentType
+  );
+
+  for (const doc of existing) {
+    if (keep.has(doc.document_id)) continue;
+    if (doc.public_id) {
+      await cloudinarySvc.deleteByPublicId(doc.public_id, cloudinaryResourceType(doc));
+    }
+    await documentModel.deleteById(doc.document_id);
+  }
+}
+
+async function persistMentorFiles(userId, mentorId, files, options = {}) {
   if (!files || typeof files !== "object") return;
+  const replaceExisting = !!options.replaceExisting;
   const groups = {
     cv: files.cv,
     certifications: files.certifications,
@@ -33,15 +59,26 @@ async function persistMentorFiles(userId, mentorId, files) {
 
   const saveList = async (field, fileList, docType) => {
     const arr = Array.isArray(fileList) ? fileList : fileList ? [fileList] : [];
+    const saved = [];
     for (const file of arr) {
       if (!file?.buffer) continue;
-      await documentUploadService.saveUploadedFile(file, {
+      const doc = await documentUploadService.saveUploadedFile(file, {
         userId,
         documentType: docType,
         contextType: "mentor_profile",
         contextId: mentorId,
       });
+      saved.push(doc);
     }
+    if (replaceExisting && saved.length) {
+      await deleteExistingDocumentsOfType(
+        userId,
+        mentorId,
+        docType,
+        saved.map((doc) => doc.document_id)
+      );
+    }
+    return saved;
   };
 
   await saveList("cv", files.cv, "cv");
@@ -60,6 +97,9 @@ async function persistMentorFiles(userId, mentorId, files) {
       contextId: mentorId,
       kind: "image",
     });
+    if (replaceExisting) {
+      await deleteExistingDocumentsOfType(userId, mentorId, "profile_image", [d.document_id]);
+    }
     if (d.file_url) await mentorModel.update(mentorId, { profile_picture: d.file_url });
   }
 
@@ -72,6 +112,9 @@ async function persistMentorFiles(userId, mentorId, files) {
       contextId: mentorId,
       kind: "video",
     });
+    if (replaceExisting) {
+      await deleteExistingDocumentsOfType(userId, mentorId, "intro_video", [d.document_id]);
+    }
     if (d.file_url) await mentorModel.update(mentorId, { intro_video_url: d.file_url });
   }
 }
@@ -130,7 +173,7 @@ exports.updateMentorProfile = async (userId, updates, files = {}) => {
 
   await mentorModel.update(mentor.mentor_id, updates);
   try {
-    await persistMentorFiles(userId, mentor.mentor_id, files);
+    await persistMentorFiles(userId, mentor.mentor_id, files, { replaceExisting: true });
   } catch (e) {
     console.error("mentor file upload:", e.message || e);
     if (e.status === 503 || e.status === 400) throw e;
@@ -267,13 +310,29 @@ exports.deleteMentorDocument = async (userId, documentId) => {
 };
 
 exports.replaceMentorDocument = async (userId, documentId, file) => {
-  await exports.deleteMentorDocument(userId, documentId);
   const mentor = await mentorModel.findByUserId(userId);
   if (!mentor) throw { status: 404, message: "Mentor profile not found" };
   if (!file?.buffer) throw { status: 400, message: "File required" };
+
+  let documentType = "cv";
+  const docRow = await documentModel.findById(documentId);
+  if (docRow && docRow.user_id === userId && docRow.context_type === "mentor_profile") {
+    documentType = docRow.document_type || documentType;
+  } else {
+    const legacy = await pool.query(
+      `SELECT md.document_type FROM mentor_documents md
+       JOIN mentors m ON m.mentor_id = md.mentor_id
+       WHERE md.mentor_document_id = $1 AND m.user_id = $2`,
+      [documentId, userId]
+    );
+    if (!legacy.rowCount) throw { status: 404, message: "Document not found" };
+    documentType = legacy.rows[0].document_type || documentType;
+  }
+
+  await exports.deleteMentorDocument(userId, documentId);
   return documentUploadService.saveUploadedFile(file, {
     userId,
-    documentType: "cv",
+    documentType,
     contextType: "mentor_profile",
     contextId: mentor.mentor_id,
   });

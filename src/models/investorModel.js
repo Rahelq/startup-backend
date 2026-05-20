@@ -1,15 +1,28 @@
 const pool = require("../config/db");
 
-function normalizeJsonb(val) {
-	if (val === undefined || val === null) return null;
+function normalizeJsonb(val, { commaSeparatedArray = false } = {}) {
+	if (val === undefined || val === null || val === "") return null;
 	if (typeof val === "string") {
+		const trimmed = val.trim();
+		if (!trimmed) return null;
 		try {
-			return JSON.parse(val);
+			return JSON.parse(trimmed);
 		} catch {
-			return val;
+			if (commaSeparatedArray) {
+				return trimmed
+					.split(",")
+					.map((item) => item.trim())
+					.filter(Boolean);
+			}
+			return trimmed;
 		}
 	}
 	return val;
+}
+
+function jsonbParam(val, options) {
+	const normalized = normalizeJsonb(val, options);
+	return normalized === null ? null : JSON.stringify(normalized);
 }
 
 async function findById(investorId) {
@@ -93,9 +106,13 @@ const UPDATEABLE = new Set([
 
 async function update(investorId, updates) {
 	const patch = { ...updates };
-	if (patch.industries !== undefined) patch.industries = normalizeJsonb(patch.industries);
+	if (patch.industries !== undefined) {
+		patch.industries = jsonbParam(patch.industries, { commaSeparatedArray: true });
+	}
 	if (patch.investment_focus !== undefined) {
-		patch.investment_focus = normalizeJsonb(patch.investment_focus);
+		patch.investment_focus = jsonbParam(patch.investment_focus, {
+			commaSeparatedArray: true,
+		});
 	}
 
 	const entries = Object.entries(patch || {}).filter(

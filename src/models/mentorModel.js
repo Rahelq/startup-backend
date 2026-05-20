@@ -1,15 +1,28 @@
 const pool = require("../config/db");
 
-function normalizeJsonb(val) {
-	if (val === undefined || val === null) return null;
+function normalizeJsonb(val, { commaSeparatedArray = false } = {}) {
+	if (val === undefined || val === null || val === "") return null;
 	if (typeof val === "string") {
+		const trimmed = val.trim();
+		if (!trimmed) return null;
 		try {
-			return JSON.parse(val);
+			return JSON.parse(trimmed);
 		} catch {
-			return val;
+			if (commaSeparatedArray) {
+				return trimmed
+					.split(",")
+					.map((item) => item.trim())
+					.filter(Boolean);
+			}
+			return trimmed;
 		}
 	}
 	return val;
+}
+
+function jsonbParam(val, options) {
+	const normalized = normalizeJsonb(val, options);
+	return normalized === null ? null : JSON.stringify(normalized);
 }
 
 async function findByIdWithUser(mentorId) {
@@ -32,7 +45,7 @@ async function create(data) {
 	const res = await pool.query(
 		`INSERT INTO mentors (
         user_id, headline, expertise, years_experience, hourly_rate, country, bio, availability
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)
       RETURNING *`,
 		[
 			data.user_id,
@@ -42,7 +55,7 @@ async function create(data) {
 			data.hourly_rate ?? null,
 			data.country ?? null,
 			data.bio ?? null,
-			data.availability ?? null,
+			jsonbParam(data.availability),
 		],
 	);
 	const mentor = res.rows[0];
@@ -117,16 +130,25 @@ const UPDATEABLE = new Set([
 
 async function update(mentorId, updates) {
 	const patch = { ...updates };
-	if (patch.skills !== undefined) patch.skills = normalizeJsonb(patch.skills);
-	if (patch.industries !== undefined) patch.industries = normalizeJsonb(patch.industries);
+	if (patch.availability !== undefined) patch.availability = jsonbParam(patch.availability);
+	if (patch.skills !== undefined) {
+		patch.skills = jsonbParam(patch.skills, { commaSeparatedArray: true });
+	}
+	if (patch.industries !== undefined) {
+		patch.industries = jsonbParam(patch.industries, { commaSeparatedArray: true });
+	}
 	if (patch.preferred_time_slots !== undefined) {
-		patch.preferred_time_slots = normalizeJsonb(patch.preferred_time_slots);
+		patch.preferred_time_slots = jsonbParam(patch.preferred_time_slots);
 	}
 	if (patch.mentorship_categories !== undefined) {
-		patch.mentorship_categories = normalizeJsonb(patch.mentorship_categories);
+		patch.mentorship_categories = jsonbParam(patch.mentorship_categories, {
+			commaSeparatedArray: true,
+		});
 	}
 	if (patch.preferred_startup_stages !== undefined) {
-		patch.preferred_startup_stages = normalizeJsonb(patch.preferred_startup_stages);
+		patch.preferred_startup_stages = jsonbParam(patch.preferred_startup_stages, {
+			commaSeparatedArray: true,
+		});
 	}
 
 	const entries = Object.entries(patch).filter(
@@ -141,6 +163,7 @@ async function update(mentorId, updates) {
 	let i = 1;
 	for (const [key, val] of entries) {
 		if (
+			key === "availability" ||
 			key === "skills" ||
 			key === "industries" ||
 			key === "preferred_time_slots" ||

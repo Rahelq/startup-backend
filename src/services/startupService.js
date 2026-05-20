@@ -4,8 +4,34 @@ const documentModel = require("../models/documentModel");
 const documentUploadService = require("./documentUploadService");
 const cloudinarySvc = require("./cloudinaryService");
 
-async function persistStartupDocuments(userId, startupId, filesByField) {
+function cloudinaryResourceType(doc) {
+  const mime = doc.mime_type || "";
+  if (mime.startsWith("video/")) return "video";
+  if (mime.startsWith("image/")) return "image";
+  return "raw";
+}
+
+async function deleteExistingDocumentsOfType(userId, startupId, documentType, keepIds = []) {
+  const keep = new Set(keepIds.filter(Boolean));
+  const existing = await documentModel.findByUserContextAndType(
+    userId,
+    "startup_profile",
+    startupId,
+    documentType
+  );
+
+  for (const doc of existing) {
+    if (keep.has(doc.document_id)) continue;
+    if (doc.public_id) {
+      await cloudinarySvc.deleteByPublicId(doc.public_id, cloudinaryResourceType(doc));
+    }
+    await documentModel.deleteById(doc.document_id);
+  }
+}
+
+async function persistStartupDocuments(userId, startupId, filesByField, options = {}) {
   if (!filesByField || typeof filesByField !== "object") return;
+  const replaceExisting = !!options.replaceExisting;
   let anyBuffer = false;
   for (const v of Object.values(filesByField)) {
     const arr = Array.isArray(v) ? v : [v];
@@ -21,6 +47,7 @@ async function persistStartupDocuments(userId, startupId, filesByField) {
   }
   for (const [field, v] of Object.entries(filesByField)) {
     const arr = Array.isArray(v) ? v : [v];
+    const saved = [];
     for (const file of arr) {
       if (!file?.buffer) continue;
       const doc = await documentUploadService.saveUploadedFile(file, {
@@ -30,12 +57,21 @@ async function persistStartupDocuments(userId, startupId, filesByField) {
         contextType: "startup_profile",
         contextId: startupId,
       });
+      saved.push(doc);
       if (field === "pitch_deck" && doc.file_url) {
         await startupModel.update(startupId, { pitch_deck_url: doc.file_url });
       }
       if ((field === "profile_image" || field === "logo") && doc.file_url) {
         await startupModel.update(startupId, { profile_image: doc.file_url });
       }
+    }
+    if (replaceExisting && saved.length) {
+      await deleteExistingDocumentsOfType(
+        userId,
+        startupId,
+        field,
+        saved.map((doc) => doc.document_id)
+      );
     }
   }
 }
@@ -94,7 +130,9 @@ exports.updateStartupProfile = async (userId, updates, uploadedFiles = {}) => {
   await startupModel.update(startup.startup_id, updates);
 
   try {
-    await persistStartupDocuments(userId, startup.startup_id, uploadedFiles);
+    await persistStartupDocuments(userId, startup.startup_id, uploadedFiles, {
+      replaceExisting: true,
+    });
   } catch (err) {
     console.error("Startup document upload failed:", err.message || err);
     if (err.status === 503 || err.status === 400) throw err;

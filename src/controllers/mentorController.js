@@ -4,7 +4,11 @@ const connectionLayerService = require("../services/connectionLayerService");
 exports.createMentorProfile = async (req, res) => {
   try {
     const userId = req.user.user_id;
-    const result = await mentorService.createMentorProfile(userId, req.body, req.files || req.file);
+    const result = await mentorService.createMentorProfile(
+      userId,
+      req.validatedBody || req.body,
+      req.files || req.file
+    );
     return res.status(201).json(result);
   } catch (err) {
     const status = err.status || 500;
@@ -53,7 +57,11 @@ exports.getMyProfile = async (req, res) => {
 exports.updateMentorProfile = async (req, res) => {
   try {
     const userId = req.user.user_id;
-    const result = await mentorService.updateMentorProfile(userId, req.body, req.files || req.file);
+    const result = await mentorService.updateMentorProfile(
+      userId,
+      req.validatedBody || req.body,
+      req.files || req.file
+    );
     return res.status(200).json(result);
   } catch (err) {
     const status = err.status || 500;

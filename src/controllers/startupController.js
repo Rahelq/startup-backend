@@ -17,7 +17,7 @@ exports.createStartupProfile = async (req, res) => {
     const userId = req.user.user_id;
     const result = await startupService.createStartupProfile(
       userId,
-      req.body,
+      req.validatedBody || req.body,
       req.files
     );
     return res.status(201).json(result);
@@ -33,7 +33,7 @@ exports.updateStartupProfile = async (req, res) => {
     const userId = req.user.user_id;
     const result = await startupService.updateStartupProfile(
       userId,
-      req.body,
+      req.validatedBody || req.body,
       req.files
     );
     return res.status(200).json(result);

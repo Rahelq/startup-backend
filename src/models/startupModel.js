@@ -1,5 +1,24 @@
 const pool = require("../config/db");
 
+function normalizeJsonb(val) {
+	if (val === undefined || val === null || val === "") return null;
+	if (typeof val === "string") {
+		const trimmed = val.trim();
+		if (!trimmed) return null;
+		try {
+			return JSON.parse(trimmed);
+		} catch {
+			return trimmed;
+		}
+	}
+	return val;
+}
+
+function jsonbParam(val) {
+	const normalized = normalizeJsonb(val);
+	return normalized === null ? null : JSON.stringify(normalized);
+}
+
 async function findById(startupId) {
 	const res = await pool.query("SELECT * FROM startups WHERE startup_id = $1", [startupId]);
 	return res.rows[0] || null;
@@ -50,7 +69,7 @@ async function create(data) {
 	const founder_role = pick(data, "founder_role", "founderRole");
 	const bio = pick(data, "bio", "bio");
 	const founding_date = pick(data, "founding_date", "foundingDate");
-	const social_links = pick(data, "social_links", "socialLinks");
+	const social_links = jsonbParam(pick(data, "social_links", "socialLinks"));
 	const pitch_deck_url = pick(data, "pitch_deck_url", "pitchDeckUrl");
 	const profile_image = pick(data, "profile_image", "profileImage");
 
@@ -61,7 +80,7 @@ async function create(data) {
         startup_tagline, stage_type, region, city, founder_role, bio, founding_date,
         social_links, pitch_deck_url, profile_image
       )
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18::jsonb,$19,$20)
      RETURNING *`,
 		[
 			userId,
@@ -112,7 +131,9 @@ const UPDATEABLE = new Set([
 ]);
 
 async function update(startupId, updates) {
-	const entries = Object.entries(updates || {}).filter(
+	const patch = { ...(updates || {}) };
+	if (patch.social_links !== undefined) patch.social_links = jsonbParam(patch.social_links);
+	const entries = Object.entries(patch).filter(
 		([k, v]) => UPDATEABLE.has(k) && v !== undefined,
 	);
 	if (entries.length === 0) {

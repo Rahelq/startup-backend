@@ -1,5 +1,7 @@
 const Joi = require("joi");
 
+const jsonLike = Joi.alternatives().try(Joi.string(), Joi.array(), Joi.object());
+
 const startupCreateSchema = Joi.object({
   startup_name: Joi.string().min(3).required(),
   industry: Joi.string().required(),
@@ -10,6 +12,7 @@ const startupCreateSchema = Joi.object({
   location: Joi.string().optional(),
   website: Joi.string().uri().optional(),
   funding_needed: Joi.number().positive().optional(),
+  social_links: jsonLike.optional(),
 }).unknown(true);
 
 const startupUpdateSchema = Joi.object({
@@ -21,6 +24,7 @@ const startupUpdateSchema = Joi.object({
   location: Joi.string().optional(),
   website: Joi.string().uri().optional(),
   funding_needed: Joi.number().positive().optional(),
+  social_links: jsonLike.optional(),
 }).unknown(true);
 
 module.exports = { startupCreateSchema, startupUpdateSchema };

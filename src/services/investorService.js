@@ -5,8 +5,34 @@ const documentModel = require("../models/documentModel");
 const documentUploadService = require("./documentUploadService");
 const cloudinarySvc = require("./cloudinaryService");
 
-async function persistInvestorFiles(userId, investorId, files) {
+function cloudinaryResourceType(doc) {
+  const mime = doc.mime_type || "";
+  if (mime.startsWith("video/")) return "video";
+  if (mime.startsWith("image/")) return "image";
+  return "raw";
+}
+
+async function deleteExistingDocumentsOfType(userId, investorId, documentType, keepIds = []) {
+  const keep = new Set(keepIds.filter(Boolean));
+  const existing = await documentModel.findByUserContextAndType(
+    userId,
+    "investor_profile",
+    investorId,
+    documentType
+  );
+
+  for (const doc of existing) {
+    if (keep.has(doc.document_id)) continue;
+    if (doc.public_id) {
+      await cloudinarySvc.deleteByPublicId(doc.public_id, cloudinaryResourceType(doc));
+    }
+    await documentModel.deleteById(doc.document_id);
+  }
+}
+
+async function persistInvestorFiles(userId, investorId, files, options = {}) {
   if (!files || typeof files !== "object") return;
+  const replaceExisting = !!options.replaceExisting;
   const pic =
     files.profile_image?.[0] ||
     files.profile_image ||
@@ -52,6 +78,9 @@ async function persistInvestorFiles(userId, investorId, files) {
       contextId: investorId,
       kind: "image",
     });
+    if (replaceExisting) {
+      await deleteExistingDocumentsOfType(userId, investorId, "profile_image", [d.document_id]);
+    }
     if (d.file_url) await investorModel.update(investorId, { profile_picture: d.file_url });
   }
   for (const [field, docType] of [
@@ -63,26 +92,46 @@ async function persistInvestorFiles(userId, investorId, files) {
     [tinCertificate, "tin_certificate"],
   ]) {
     const arr = Array.isArray(field) ? field : field ? [field] : [];
+    const saved = [];
     for (const file of arr) {
       if (!file?.buffer) continue;
-      await documentUploadService.saveUploadedFile(file, {
+      const doc = await documentUploadService.saveUploadedFile(file, {
         userId,
         documentType: docType,
         contextType: "investor_profile",
         contextId: investorId,
       });
+      saved.push(doc);
+    }
+    if (replaceExisting && saved.length) {
+      await deleteExistingDocumentsOfType(
+        userId,
+        investorId,
+        docType,
+        saved.map((doc) => doc.document_id)
+      );
     }
   }
   if (portfolio) {
     const arr = Array.isArray(portfolio) ? portfolio : [portfolio];
+    const saved = [];
     for (const file of arr) {
       if (!file?.buffer) continue;
-      await documentUploadService.saveUploadedFile(file, {
+      const doc = await documentUploadService.saveUploadedFile(file, {
         userId,
         documentType: "portfolio",
         contextType: "investor_profile",
         contextId: investorId,
       });
+      saved.push(doc);
+    }
+    if (replaceExisting && saved.length) {
+      await deleteExistingDocumentsOfType(
+        userId,
+        investorId,
+        "portfolio",
+        saved.map((doc) => doc.document_id)
+      );
     }
   }
 }
@@ -146,7 +195,7 @@ exports.updateInvestorProfile = async (userId, updates, files = {}) => {
 
   await investorModel.update(investor.investor_id, updates);
   try {
-    await persistInvestorFiles(userId, investor.investor_id, files);
+    await persistInvestorFiles(userId, investor.investor_id, files, { replaceExisting: true });
   } catch (e) {
     console.error("investor file upload:", e.message || e);
     if (e.status === 503 || e.status === 400) throw e;
@@ -199,13 +248,34 @@ exports.deleteInvestorDocument = async (userId, documentId) => {
 };
 
 exports.updateInvestorDocument = async (userId, documentId, file) => {
-  await exports.deleteInvestorDocument(userId, documentId);
   const investor = await investorModel.findByUserId(userId);
   if (!investor) throw { status: 404, message: "Investor profile not found" };
   if (!file?.buffer) throw { status: 400, message: "File required" };
+
+  let documentType = "portfolio";
+  const docRow = await documentModel.findById(documentId);
+  if (docRow && docRow.user_id === userId && docRow.context_type === "investor_profile") {
+    documentType = docRow.document_type || documentType;
+  } else {
+    try {
+      const legacy = await pool.query(
+        `SELECT idoc.document_type FROM investor_documents idoc
+         JOIN investors i ON i.investor_id = idoc.investor_id
+         WHERE idoc.investor_document_id = $1 AND i.user_id = $2`,
+        [documentId, userId]
+      );
+      if (!legacy.rowCount) throw { status: 404, message: "Document not found" };
+      documentType = legacy.rows[0].document_type || documentType;
+    } catch (err) {
+      if (err.status) throw err;
+      throw { status: 404, message: "Document not found" };
+    }
+  }
+
+  await exports.deleteInvestorDocument(userId, documentId);
   return documentUploadService.saveUploadedFile(file, {
     userId,
-    documentType: "portfolio",
+    documentType,
     contextType: "investor_profile",
     contextId: investor.investor_id,
   });

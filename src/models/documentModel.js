@@ -91,6 +91,19 @@ exports.findByUserAndContext = async (userId, contextType, contextId) => {
 	return result.rows;
 };
 
+exports.findByUserContextAndType = async (userId, contextType, contextId, documentType) => {
+	const result = await pool.query(
+		`SELECT * FROM documents
+     WHERE user_id = $1
+       AND context_type = $2
+       AND ($3::integer IS NULL OR context_id IS NOT DISTINCT FROM $3::integer)
+       AND document_type = $4
+     ORDER BY created_at DESC`,
+		[userId, contextType, contextId, documentType],
+	);
+	return result.rows;
+};
+
 exports.deleteById = async (documentId) => {
 	const result = await pool.query("DELETE FROM documents WHERE document_id = $1 RETURNING *", [
 		documentId,
