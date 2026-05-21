@@ -56,46 +56,56 @@ exports.getPendingUser = async (req, res) => {
       profile = p.rows[0] || null;
     }
 
-    // Unified documents + legacy role-specific tables
-    let documents = [];
-    const unified = await pool.query(
-      `SELECT document_id, document_type, file_name, original_name, file_url, file_path, mime_type,
-              file_size_bytes, public_id, context_type, context_id, created_at, 'documents' AS source
-       FROM documents WHERE user_id = $1
-       ORDER BY created_at DESC`,
-      [userId]
-    );
-    documents = unified.rows;
-
-    if (user.role === "Mentor" && profile && profile.mentor_id) {
-      const docs = await pool.query(
-        "SELECT mentor_document_id AS document_id, document_type, file_name, file_path AS file_url, file_type AS mime_type, file_size_bytes, created_at, 'mentor_documents' AS source FROM mentor_documents WHERE mentor_id = $1",
-        [profile.mentor_id]
-      );
-      for (const row of docs.rows) {
-        if (!documents.some((d) => d.document_id === row.document_id && d.source === row.source)) {
-          documents.push(row);
-        }
-      }
-    } else if (user.role === "Investor" && profile && profile.investor_id) {
-      try {
-        const docs = await pool.query(
-          "SELECT investor_document_id AS document_id, document_type, file_name, file_path AS file_url, file_type AS mime_type, file_size_bytes, created_at, 'investor_documents' AS source FROM investor_documents WHERE investor_id = $1",
-          [profile.investor_id]
-        );
-        for (const row of docs.rows) {
-          documents.push(row);
-        }
-      } catch {
-        /* table optional */
-      }
-    }
+    const documents = await getUserDocuments(userId, user.role, profile);
 
     return res.json({ user, profile, documents });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
+
+async function getUserDocuments(userId, role, profile) {
+  const unified = await pool.query(
+    `SELECT document_id, document_type, file_name, original_name, file_url, file_path, mime_type,
+            file_size_bytes, public_id, context_type, context_id, created_at, 'documents' AS source
+     FROM documents WHERE user_id = $1
+     ORDER BY created_at DESC`,
+    [userId]
+  );
+  const documents = unified.rows;
+
+  if (role === "Mentor" && profile && profile.mentor_id) {
+    const docs = await pool.query(
+      `SELECT mentor_document_id AS document_id, document_type, file_name,
+              file_path AS file_url, file_type AS mime_type, file_size_bytes,
+              created_at, 'mentor_documents' AS source
+       FROM mentor_documents WHERE mentor_id = $1`,
+      [profile.mentor_id]
+    );
+    for (const row of docs.rows) {
+      if (!documents.some((d) => d.document_id === row.document_id && d.source === row.source)) {
+        documents.push(row);
+      }
+    }
+  } else if (role === "Investor" && profile && profile.investor_id) {
+    try {
+      const docs = await pool.query(
+        `SELECT investor_document_id AS document_id, document_type, file_name,
+                file_path AS file_url, file_type AS mime_type, file_size_bytes,
+                created_at, 'investor_documents' AS source
+         FROM investor_documents WHERE investor_id = $1`,
+        [profile.investor_id]
+      );
+      for (const row of docs.rows) {
+        documents.push(row);
+      }
+    } catch {
+      /* table optional */
+    }
+  }
+
+  return documents;
+}
 
 // PUT /api/admin/users/reject/:userId  (mark is_active=false)
 exports.rejectUser = async (req, res) => {
@@ -219,6 +229,10 @@ exports.getFoundationDashboard = async (_req, res) => {
       investorCount,
       sessionCount,
       paymentSum,
+      usersByVerificationStatus,
+      usersByRoleAndVerificationStatus,
+      usersByAccountStatus,
+      activeUsers,
     ] = await Promise.all([
       pool.query(
         "SELECT COUNT(*)::int AS c FROM users WHERE deleted_at IS NULL AND role <> 'Admin'"
@@ -245,6 +259,37 @@ exports.getFoundationDashboard = async (_req, res) => {
       pool.query(
         "SELECT COALESCE(SUM(amount), 0)::numeric AS total FROM payments WHERE status = 'completed'"
       ),
+      pool.query(
+        `SELECT
+           COALESCE(verification_status, CASE WHEN is_approved THEN 'approved' ELSE 'pending' END) AS status,
+           COUNT(*)::int AS c
+         FROM users
+         WHERE deleted_at IS NULL AND role <> 'Admin'
+         GROUP BY status
+         ORDER BY status`
+      ),
+      pool.query(
+        `SELECT
+           role,
+           COALESCE(verification_status, CASE WHEN is_approved THEN 'approved' ELSE 'pending' END) AS status,
+           COUNT(*)::int AS c
+         FROM users
+         WHERE deleted_at IS NULL AND role IN ('Startup','Mentor','Investor')
+         GROUP BY role, status
+         ORDER BY role, status`
+      ),
+      pool.query(
+        `SELECT
+           COALESCE(account_status, CASE WHEN is_active THEN 'active' ELSE 'suspended' END) AS status,
+           COUNT(*)::int AS c
+         FROM users
+         WHERE deleted_at IS NULL AND role <> 'Admin'
+         GROUP BY status
+         ORDER BY status`
+      ),
+      pool.query(
+        "SELECT COUNT(*)::int AS c FROM users WHERE deleted_at IS NULL AND role <> 'Admin' AND is_active = true"
+      ),
     ]);
 
     return res.json({
@@ -253,10 +298,14 @@ exports.getFoundationDashboard = async (_req, res) => {
         mentors: mentorCount.rows[0].c,
         startups: startupCount.rows[0].c,
         investors: investorCount.rows[0].c,
+        active_users: activeUsers.rows[0].c,
         mentorship_sessions: sessionCount.rows[0].c,
         payments_completed_sum: paymentSum.rows[0].total,
       },
       users_by_role: byRole.rows,
+      users_by_verification_status: usersByVerificationStatus.rows,
+      users_by_role_and_verification_status: usersByRoleAndVerificationStatus.rows,
+      users_by_account_status: usersByAccountStatus.rows,
       pending_verification_queue: pendingVerification.rows[0].c,
     });
   } catch (err) {
@@ -288,22 +337,38 @@ exports.approveUser = async (req, res) => {
     const result = await pool.query(
       `UPDATE users
        SET is_approved = true,
+           is_active = true,
            verification_status = 'approved',
+           account_status = 'active',
            approved_by = $1,
            approved_at = NOW(),
            updated_at = NOW()
        WHERE user_id = $2
-       RETURNING user_id, email, is_approved, verification_status`,
+       RETURNING user_id, email, is_active, is_approved, verification_status, account_status`,
       [admin.user_id, userId]
     );
     if (result.rows.length === 0) return res.status(404).json({ message: "User not found" });
 
+    await pool.query("ALTER TABLE startups ADD COLUMN IF NOT EXISTS is_listed BOOLEAN DEFAULT FALSE");
+    await pool.query("UPDATE startups SET is_listed = true WHERE user_id = $1", [userId]);
     await pool.query(
-      "UPDATE mentors SET verification_status = 'approved' WHERE user_id = $1",
+      "ALTER TABLE mentors ADD COLUMN IF NOT EXISTS is_approved BOOLEAN DEFAULT FALSE"
+    );
+    await pool.query(
+      "ALTER TABLE mentors ADD COLUMN IF NOT EXISTS verification_status VARCHAR(20) NOT NULL DEFAULT 'pending'"
+    );
+    await pool.query(
+      "UPDATE mentors SET is_approved = true, verification_status = 'approved' WHERE user_id = $1",
       [userId]
     );
     await pool.query(
-      "UPDATE investors SET verification_status = 'approved' WHERE user_id = $1",
+      "ALTER TABLE investors ADD COLUMN IF NOT EXISTS is_approved BOOLEAN DEFAULT FALSE"
+    );
+    await pool.query(
+      "ALTER TABLE investors ADD COLUMN IF NOT EXISTS verification_status VARCHAR(20) NOT NULL DEFAULT 'pending'"
+    );
+    await pool.query(
+      "UPDATE investors SET is_approved = true, verification_status = 'approved' WHERE user_id = $1",
       [userId]
     );
 
@@ -467,7 +532,9 @@ exports.getUser = async (req, res) => {
       profile = p.rows[0] || null;
     }
 
-    return res.json({ user, profile });
+    const documents = await getUserDocuments(userId, user.role, profile);
+
+    return res.json({ user, profile, documents });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
@@ -748,8 +815,11 @@ exports.approveInvestor = async (req, res) => {
     await pool.query(
       "ALTER TABLE investors ADD COLUMN IF NOT EXISTS is_approved BOOLEAN DEFAULT FALSE"
     );
+    await pool.query(
+      "ALTER TABLE investors ADD COLUMN IF NOT EXISTS verification_status VARCHAR(20) NOT NULL DEFAULT 'pending'"
+    );
     const rr = await pool.query(
-      "UPDATE investors SET is_approved = true WHERE investor_id = $1 RETURNING *",
+      "UPDATE investors SET is_approved = true, verification_status = 'approved' WHERE investor_id = $1 RETURNING *",
       [investorId]
     );
     if (!rr.rowCount) return res.status(404).json({ message: "Investor not found" });
@@ -955,7 +1025,7 @@ exports.updateUserStatus = async (req, res) => {
     // update status and keep is_active for compatibility
     const isActive = status === "active";
     const r = await pool.query(
-      "UPDATE users SET status = $1, is_active = $2 WHERE user_id = $3 RETURNING user_id, email, status, is_active",
+      "UPDATE users SET account_status = $1, is_active = $2 WHERE user_id = $3 RETURNING user_id, email, account_status, is_active",
       [status, isActive, userId]
     );
     if (!r.rowCount) return res.status(404).json({ message: "User not found" });
