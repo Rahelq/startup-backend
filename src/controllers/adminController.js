@@ -37,10 +37,14 @@ exports.getPendingUser = async (req, res) => {
     const userRes = await pool.query(
       `SELECT user_id, first_name, last_name, email, role, phone_number, is_approved, is_active,
               verification_status, account_status, profile_submitted_at, created_at
-       FROM users WHERE user_id = $1`,
+       FROM users
+       WHERE user_id = $1
+         AND COALESCE(verification_status, CASE WHEN is_approved THEN 'approved' ELSE 'pending' END) = 'pending'`,
       [userId]
     );
-    if (userRes.rows.length === 0) return res.status(404).json({ message: "User not found" });
+    if (userRes.rows.length === 0) {
+      return res.status(404).json({ message: "Pending user not found" });
+    }
     const user = userRes.rows[0];
 
     // fetch role-specific profile
@@ -1115,8 +1119,13 @@ exports.updateReportStatus = async (req, res) => {
 exports.listDocuments = async (req, res) => {
   const {
     type,
+    document_type,
+    role,
+    user_id,
     startup_id,
     mentor_id,
+    investor_id,
+    context_type,
     limit = 50,
     offset = 0,
     sort_by = "created_at",
@@ -1125,27 +1134,56 @@ exports.listDocuments = async (req, res) => {
   try {
     const where = [];
     const params = [];
-    if (type) {
-      params.push(type);
-      where.push(`file_type = $${params.length}`);
+    const docType = document_type || type;
+    if (docType) {
+      params.push(docType);
+      where.push(`d.document_type = $${params.length}`);
+    }
+    if (role) {
+      params.push(role);
+      where.push(`u.role = $${params.length}`);
+    }
+    if (user_id) {
+      params.push(user_id);
+      where.push(`d.user_id = $${params.length}`);
     }
     if (startup_id) {
       params.push(startup_id);
-      where.push(`startup_id = $${params.length}`);
+      where.push(
+        `(d.startup_id = $${params.length} OR (d.context_type = 'startup_profile' AND d.context_id = $${params.length}::integer))`
+      );
     }
     if (mentor_id) {
       params.push(mentor_id);
-      where.push(`mentor_id = $${params.length}`);
+      where.push(`d.context_type = 'mentor_profile' AND d.context_id = $${params.length}::integer`);
+    }
+    if (investor_id) {
+      params.push(investor_id);
+      where.push(
+        `d.context_type = 'investor_profile' AND d.context_id = $${params.length}::integer`
+      );
+    }
+    if (context_type) {
+      params.push(context_type);
+      where.push(`d.context_type = $${params.length}`);
     }
     params.push(limit);
     params.push(offset);
-    const allowedSortFields = ["created_at", "file_type", "file_size_bytes", "file_name"];
+    const allowedSortFields = ["created_at", "document_type", "mime_type", "file_size_bytes", "file_name"];
     const sortBy = allowedSortFields.includes(sort_by) ? sort_by : "created_at";
     const sortDir = ["ASC", "DESC"].includes(sort_order.toUpperCase())
       ? sort_order.toUpperCase()
       : "DESC";
     const whereClause = where.length ? ` WHERE ${where.join(" AND ")}` : "";
-    const q = `SELECT document_id, startup_id, file_name, file_type, file_size_bytes, created_at FROM documents ${whereClause} ORDER BY ${sortBy} ${sortDir} LIMIT $${params.length - 1} OFFSET $${params.length}`;
+    const q = `SELECT d.document_id, d.user_id, u.role, u.email AS owner_email,
+                      d.startup_id, d.document_type, d.original_name, d.file_name,
+                      d.file_url, d.file_path, d.mime_type, d.file_size_bytes,
+                      d.public_id, d.context_type, d.context_id, d.created_at
+               FROM documents d
+               LEFT JOIN users u ON u.user_id = d.user_id
+               ${whereClause}
+               ORDER BY d.${sortBy} ${sortDir}
+               LIMIT $${params.length - 1} OFFSET $${params.length}`;
     const r = await pool.query(q, params);
     return res.json({ documents: r.rows });
   } catch (err) {
